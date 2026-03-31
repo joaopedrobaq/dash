@@ -288,32 +288,26 @@ tr.editing .prio-selector {
 @media (max-width: 768px) {
 
   body {
-    background-color: #f0f2f5;
     padding-bottom: 64px;
   }
 
   header {
-    padding: 14px 16px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    padding: 12px 16px;
   }
 
   header h1 {
     font-size: 1.1rem;
   }
 
-  /* Grid vira coluna única, só o painel ativo aparece */
   .dashboard {
     display: block;
     padding: 16px;
   }
 
+  /* Só o painel ativo aparece */
   .card {
     display: none;
     min-height: unset;
-    border-radius: 12px;
-    padding: 20px 16px;
   }
 
   .card.panel-active {
@@ -329,7 +323,7 @@ tr.editing .prio-selector {
     right: 0;
     height: 60px;
     background: #fff;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid #ddd;
     z-index: 100;
   }
 
@@ -345,7 +339,7 @@ tr.editing .prio-selector {
     cursor: pointer;
     color: #aaa;
     transition: color 0.15s;
-    padding: 0;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .nav-tab.active {
@@ -353,7 +347,7 @@ tr.editing .prio-selector {
   }
 
   .nav-icon {
-    font-size: 18px;
+    font-size: 20px;
     line-height: 1;
   }
 
@@ -364,15 +358,15 @@ tr.editing .prio-selector {
     letter-spacing: 0.4px;
   }
 
-  /* ── Formulário de adição ── */
+  /* ── Inputs maiores para toque ── */
   .todo-inputs {
     flex-direction: column;
     gap: 10px;
-    margin-bottom: 12px;
   }
 
-  .todo-inputs input {
-    font-size: 16px; /* evita zoom automático no iOS */
+  .todo-inputs input,
+  textarea {
+    font-size: 16px;
     padding: 10px 12px;
   }
 
@@ -382,130 +376,14 @@ tr.editing .prio-selector {
     font-size: 16px;
   }
 
-  .prio-selector {
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
   .prio-btn {
     flex: 1;
     padding: 8px 4px;
     font-size: 13px;
-    text-align: center;
   }
 
-  /* ── Tabela vira lista de cartões ── */
-  #todo-table thead {
-    display: none;
-  }
-
-  #todo-table,
-  #todo-table tbody,
-  #todo-table tr,
-  #todo-table td {
-    display: block;
-    width: 100%;
-  }
-
-  #todo-table tr:not(.section-row):not(.editing) {
-    position: relative;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    padding: 10px 70px 10px 14px;
-    border-left: 4px solid transparent;
-    border-bottom: none;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-  }
-
-  tr.row-alta  { border-left-color: #f5a0a0 !important; }
-  tr.row-media { border-left-color: #f5d97a !important; }
-  tr.row-baixa { border-left-color: #85d4a0 !important; }
-
-  .drag-handle { display: none; }
-
-  #todo-table td {
-    padding: 1px 0 !important;
-    white-space: normal !important;
-    width: auto !important;
-  }
-
-  .col-cliente {
-    font-size: 11px;
-    color: #999;
-    font-weight: 500;
-  }
-
-  .col-tema {
-    font-size: 15px;
-    font-weight: 600;
-    color: #2c3e50;
-    padding: 3px 0 !important;
-  }
-
-  .col-pasta {
-    font-size: 11px;
-    color: #999;
-  }
-
-  .col-actions {
-    position: absolute !important;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    width: auto !important;
-    white-space: nowrap;
-  }
-
-  .btn-del,
-  .btn-edit {
-    font-size: 16px;
-    padding: 4px 6px;
-  }
-
-  /* ── Linha de edição no mobile ── */
-  tr.editing {
-    border-radius: 10px;
-    margin-bottom: 10px;
-    padding: 12px !important;
-    border-bottom: none;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-    background: #f8f9fa;
-  }
-
-  tr.editing td {
-    padding: 4px 0 !important;
-  }
-
-  tr.editing .edit-input {
-    font-size: 16px;
-    padding: 8px 10px;
-  }
-
-  tr.editing .col-actions {
-    position: static !important;
-    transform: none;
-    flex-direction: row;
-    justify-content: flex-end;
-    margin-top: 8px;
-    width: 100% !important;
-  }
-
-  .btn-save,
-  .btn-cancel {
-    font-size: 18px;
-    padding: 6px 12px;
-  }
-
-  /* ── Seção separadora ── */
-  .section-label {
-    padding: 14px 4px 4px !important;
-  }
-
-  /* ── E-mails ── */
-  textarea {
-    font-size: 16px;
+  /* ── Tabela com scroll horizontal ── */
+  #card-todo {
+    overflow-x: auto;
   }
 }
