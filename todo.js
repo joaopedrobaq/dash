@@ -68,6 +68,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       </td>
     `;
 
+    // Drag (desktop)
     tr.addEventListener("dragstart", (e) => {
       dragSrc = i;
       tr.classList.add("dragging");
@@ -85,6 +86,52 @@ window.addEventListener("DOMContentLoaded", async () => {
       save();
       render();
     });
+
+    // Drag por toque (mobile)
+    const handle = tr.querySelector(".drag-handle");
+    let touchTarget = null;
+
+    handle.addEventListener("touchstart", (e) => {
+      dragSrc = i;
+      touchTarget = null;
+      tr.classList.add("dragging");
+      e.preventDefault();
+    }, { passive: false });
+
+    handle.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      const y = e.touches[0].clientY;
+      tbody.querySelectorAll("tr").forEach(r => r.classList.remove("drag-over"));
+
+      let closest = null, closestDist = Infinity;
+      tbody.querySelectorAll("tr[data-index]").forEach(r => {
+        if (r === tr) return;
+        const rect = r.getBoundingClientRect();
+        const dist = Math.abs(y - (rect.top + rect.height / 2));
+        if (dist < closestDist) { closestDist = dist; closest = r; }
+      });
+
+      if (closest) {
+        touchTarget = +closest.dataset.index;
+        closest.classList.add("drag-over");
+      }
+    }, { passive: false });
+
+    const endTouch = () => {
+      tr.classList.remove("dragging");
+      tbody.querySelectorAll("tr").forEach(r => r.classList.remove("drag-over"));
+      if (dragSrc !== null && touchTarget !== null && touchTarget !== dragSrc) {
+        const moved = items.splice(dragSrc, 1)[0];
+        items.splice(touchTarget, 0, moved);
+        save();
+      }
+      dragSrc = null;
+      touchTarget = null;
+      render();
+    };
+
+    handle.addEventListener("touchend", endTouch);
+    handle.addEventListener("touchcancel", endTouch);
 
     return tr;
   }
