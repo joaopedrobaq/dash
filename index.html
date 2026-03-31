@@ -21,8 +21,8 @@
         <!-- a definir -->
       </section>
 
-      <section class="card" id="card-todo">
-        <h2>Lista de Tarefas <span id="sync-status"></span></h2>
+      <section class="card panel-active" id="card-todo">
+        <h2>Tarefas <span id="sync-status"></span></h2>
 
         <form id="todo-form" autocomplete="off">
           <div class="todo-inputs">
@@ -56,9 +56,25 @@
       </section>
     </main>
 
+    <nav class="mobile-nav">
+      <button class="nav-tab active" data-target="card-todo">
+        <span class="nav-icon">✓</span>
+        <span class="nav-label">Tarefas</span>
+      </button>
+      <button class="nav-tab" data-target="card-emails">
+        <span class="nav-icon">@</span>
+        <span class="nav-label">E-mails</span>
+      </button>
+      <button class="nav-tab" data-target="card-esquerda">
+        <span class="nav-icon">+</span>
+        <span class="nav-label">Em breve</span>
+      </button>
+    </nav>
+
     <script src="config.js"></script>
     <script src="db.js"></script>
     <script src="emails.js"></script>
     <script src="todo.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>
