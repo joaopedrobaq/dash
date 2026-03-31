@@ -1,0 +1,25 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gerar config.js a partir dos segredos
+        env:
+          SCRIPT_URL: ${{ secrets.SCRIPT_URL }}
+          TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          printf 'const CONFIG = { SCRIPT_URL: "%s", TOKEN: "%s" };\n' "$SCRIPT_URL" "$TOKEN" > config.js
+
+      - name: Deploy para GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          exclude_assets: '.github'
