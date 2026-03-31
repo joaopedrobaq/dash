@@ -28,11 +28,32 @@ window.addEventListener("DOMContentLoaded", async () => {
       .catch(()  => setStatus("⚠ Erro ao sincronizar", "sync-error"));
   }
 
+  /* ── Helpers de reordenação com troca de prioridade ── */
+  function dropOnItem(srcIndex, targetIndex) {
+    if (srcIndex === targetIndex) return;
+    const targetPrioridade = items[targetIndex].prioridade;
+    const moved = items.splice(srcIndex, 1)[0];
+    moved.prioridade = targetPrioridade;
+    const adjusted = srcIndex < targetIndex ? targetIndex - 1 : targetIndex;
+    items.splice(adjusted, 0, moved);
+    save();
+    render();
+  }
+
+  function dropOnSection(srcIndex, prioridade) {
+    const moved = items.splice(srcIndex, 1)[0];
+    moved.prioridade = prioridade;
+    // Insere no início da seção
+    const firstInGroup = items.findIndex(it => it.prioridade === prioridade);
+    items.splice(firstInGroup === -1 ? items.length : firstInGroup, 0, moved);
+    save();
+    render();
+  }
+
   /* ── Seletor de prioridade ── */
   function buildPrioSelector(selected, onChange) {
     const wrap = document.createElement("div");
     wrap.className = "prio-selector";
-
     PRIORIDADES.forEach(({ key, label }) => {
       const btn = document.createElement("button");
       btn.type = "button";
@@ -46,7 +67,6 @@ window.addEventListener("DOMContentLoaded", async () => {
       });
       wrap.appendChild(btn);
     });
-
     return wrap;
   }
 
@@ -54,7 +74,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   function renderRow(item, i) {
     const tr = document.createElement("tr");
     tr.draggable = true;
-    tr.className = `row-${item.prioridade || "baixa"}`;
+    tr.className = `row-${item.prioridade || "baixa"}${item.pausado ? " row-pausado" : ""}`;
     tr.dataset.index = i;
 
     tr.innerHTML = `
@@ -63,12 +83,13 @@ window.addEventListener("DOMContentLoaded", async () => {
       <td class="col-tema">${item.tema}</td>
       <td class="col-pasta">${item.pasta}</td>
       <td class="col-actions">
+        <button class="btn-pause ${item.pausado ? "is-pausado" : ""}" data-i="${i}" title="${item.pausado ? "Retomar" : "Pausar"}">${item.pausado ? "▶" : "⏸"}</button>
         <button class="btn-edit" data-i="${i}" title="Editar">✎</button>
         <button class="btn-del"  data-i="${i}" title="Remover">✕</button>
       </td>
     `;
 
-    // Drag (desktop)
+    // Drag — desktop
     tr.addEventListener("dragstart", (e) => {
       dragSrc = i;
       tr.classList.add("dragging");
@@ -80,20 +101,18 @@ window.addEventListener("DOMContentLoaded", async () => {
     tr.addEventListener("drop", (e) => {
       e.preventDefault();
       tr.classList.remove("drag-over");
-      if (dragSrc === null || dragSrc === i) return;
-      const moved = items.splice(dragSrc, 1)[0];
-      items.splice(i, 0, moved);
-      save();
-      render();
+      if (dragSrc === null) return;
+      dropOnItem(dragSrc, i);
+      dragSrc = null;
     });
 
-    // Drag por toque (mobile)
+    // Drag — touch (mobile)
     const handle = tr.querySelector(".drag-handle");
-    let touchTarget = null;
+    let touchDropTarget = null;
 
     handle.addEventListener("touchstart", (e) => {
       dragSrc = i;
-      touchTarget = null;
+      touchDropTarget = null;
       tr.classList.add("dragging");
       e.preventDefault();
     }, { passive: false });
@@ -102,7 +121,19 @@ window.addEventListener("DOMContentLoaded", async () => {
       e.preventDefault();
       const y = e.touches[0].clientY;
       tbody.querySelectorAll("tr").forEach(r => r.classList.remove("drag-over"));
+      touchDropTarget = null;
 
+      // Verifica se está sobre uma seção
+      for (const r of tbody.querySelectorAll("tr.section-row")) {
+        const rect = r.getBoundingClientRect();
+        if (y >= rect.top && y <= rect.bottom) {
+          r.classList.add("drag-over");
+          touchDropTarget = { type: "section", prioridade: r.dataset.prioridade };
+          return;
+        }
+      }
+
+      // Linha de item mais próxima
       let closest = null, closestDist = Infinity;
       tbody.querySelectorAll("tr[data-index]").forEach(r => {
         if (r === tr) return;
@@ -112,7 +143,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       });
 
       if (closest) {
-        touchTarget = +closest.dataset.index;
+        touchDropTarget = { type: "item", index: +closest.dataset.index };
         closest.classList.add("drag-over");
       }
     }, { passive: false });
@@ -120,14 +151,17 @@ window.addEventListener("DOMContentLoaded", async () => {
     const endTouch = () => {
       tr.classList.remove("dragging");
       tbody.querySelectorAll("tr").forEach(r => r.classList.remove("drag-over"));
-      if (dragSrc !== null && touchTarget !== null && touchTarget !== dragSrc) {
-        const moved = items.splice(dragSrc, 1)[0];
-        items.splice(touchTarget, 0, moved);
-        save();
+
+      if (dragSrc !== null && touchDropTarget !== null) {
+        if (touchDropTarget.type === "item") {
+          dropOnItem(dragSrc, touchDropTarget.index);
+        } else if (touchDropTarget.type === "section") {
+          dropOnSection(dragSrc, touchDropTarget.prioridade);
+        }
       }
+
       dragSrc = null;
-      touchTarget = null;
-      render();
+      touchDropTarget = null;
     };
 
     handle.addEventListener("touchend", endTouch);
@@ -181,11 +215,23 @@ window.addEventListener("DOMContentLoaded", async () => {
     return tr;
   }
 
-  /* ── Linha de seção ── */
-  function sectionRow(label) {
+  /* ── Linha de seção (também é drop target) ── */
+  function sectionRow(label, prioridade) {
     const tr = document.createElement("tr");
     tr.className = "section-row";
+    tr.dataset.prioridade = prioridade;
     tr.innerHTML = `<td colspan="5" class="section-label">${label}</td>`;
+
+    tr.addEventListener("dragover", (e) => { e.preventDefault(); tr.classList.add("drag-over"); });
+    tr.addEventListener("dragleave", () => tr.classList.remove("drag-over"));
+    tr.addEventListener("drop", (e) => {
+      e.preventDefault();
+      tr.classList.remove("drag-over");
+      if (dragSrc === null) return;
+      dropOnSection(dragSrc, prioridade);
+      dragSrc = null;
+    });
+
     return tr;
   }
 
@@ -194,21 +240,30 @@ window.addEventListener("DOMContentLoaded", async () => {
     tbody.innerHTML = "";
 
     const grupos = {
-      alta:  { label: "Alta prioridade",  rows: [] },
-      media: { label: "Prioridade média", rows: [] },
-      baixa: { label: "Baixa prioridade", rows: [] },
+      alta:  { label: "Alta prioridade",  rows: [], pausados: [] },
+      media: { label: "Prioridade média", rows: [], pausados: [] },
+      baixa: { label: "Baixa prioridade", rows: [], pausados: [] },
     };
 
     items.forEach((item, i) => {
       const p  = item.prioridade || "baixa";
       const tr = i === editingIndex ? renderEditRow(item, i) : renderRow(item, i);
-      grupos[p].rows.push(tr);
+      (item.pausado ? grupos[p].pausados : grupos[p].rows).push(tr);
     });
 
-    Object.values(grupos).forEach(grupo => {
-      if (grupo.rows.length === 0) return;
-      tbody.appendChild(sectionRow(grupo.label));
-      grupo.rows.forEach(tr => tbody.appendChild(tr));
+    Object.entries(grupos).forEach(([key, grupo]) => {
+      const todos = [...grupo.rows, ...grupo.pausados];
+      if (todos.length === 0) return;
+      tbody.appendChild(sectionRow(grupo.label, key));
+      todos.forEach(tr => tbody.appendChild(tr));
+    });
+
+    tbody.querySelectorAll(".btn-pause").forEach(btn => {
+      btn.addEventListener("click", () => {
+        items[+btn.dataset.i].pausado = !items[+btn.dataset.i].pausado;
+        save();
+        render();
+      });
     });
 
     tbody.querySelectorAll(".btn-edit").forEach(btn => {
