@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>Dashboard</h1>
+    </header>
+
+    <main class="dashboard">
+      <section class="card" id="card-esquerda">
+        <!-- a definir -->
+      </section>
+
+      <section class="card" id="card-todo">
+        <h2>Lista de Tarefas <span id="sync-status"></span></h2>
+
+        <form id="todo-form" autocomplete="off">
+          <div class="todo-inputs">
+            <input id="f-cliente" type="text" placeholder="Cliente" />
+            <input id="f-tema"    type="text" placeholder="Tema" />
+            <input id="f-pasta"   type="text" placeholder="Pasta" />
+            <button type="submit">+</button>
+          </div>
+          <div id="todo-prio-selector"></div>
+        </form>
+
+        <table id="todo-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Cliente</th>
+              <th>Tema</th>
+              <th>Pasta</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="todo-body"></tbody>
+        </table>
+      </section>
+
+      <section class="card" id="card-emails">
+        <h2>Extrator de E-mails</h2>
+        <textarea id="texto" placeholder="Cole aqui o texto com e-mails..."></textarea>
+        <p class="label">E-mails extraídos (exceto @bomfimnovis.com.br):</p>
+        <div id="resultado" title="Clique para copiar"></div>
+      </section>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="db.js"></script>
+    <script src="emails.js"></script>
+    <script src="todo.js"></script>
+  </body>
+</html>
