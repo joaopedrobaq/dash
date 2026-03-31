@@ -18,6 +18,7 @@ jobs:
           TOKEN: ${{ secrets.TOKEN }}
         run: |
           printf 'const CONFIG = { SCRIPT_URL: "%s", TOKEN: "%s" };\n' "$SCRIPT_URL" "$TOKEN" > config.js
+          sed -i '/config\.js/d' .gitignore
 
       - name: Deploy para GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
