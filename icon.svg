@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Fundo -->
+  <rect width="100" height="100" rx="22" fill="#2c3e50"/>
+  <!-- Barras de prioridade (alta, média, baixa) -->
+  <rect x="20" y="32" width="60" height="10" rx="5" fill="#f5a0a0"/>
+  <rect x="20" y="48" width="45" height="10" rx="5" fill="#f5d97a"/>
+  <rect x="20" y="64" width="28" height="10" rx="5" fill="#85d4a0"/>
+</svg>
