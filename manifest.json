@@ -1,6 +1,6 @@
 {
-  "name": "Dashboard",
-  "short_name": "Dashboard",
+  "name": "PBQ",
+  "short_name": "PBQ",
   "start_url": "/dash/",
   "display": "standalone",
   "background_color": "#f0f2f5",
