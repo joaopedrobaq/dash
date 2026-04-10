@@ -41,7 +41,8 @@ header h1 {
 }
 
 #card-esquerda { grid-column: 1; grid-row: 1; }
-#card-tool     { grid-column: 2; grid-row: 1; padding: 0; overflow: hidden; display: none; }
+#card-tool              { grid-column: 2; grid-row: 1; padding: 0; overflow: hidden; display: none; }
+#card-tool.panel-active { display: block; }
 #card-todo     { grid-column: 2; grid-row: 1; }
 #card-emails   { grid-column: 3; grid-row: 1; }
 
