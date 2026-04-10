@@ -40,6 +40,44 @@ header h1 {
   align-items: start;
 }
 
+#card-esquerda { grid-column: 1; grid-row: 1; }
+#card-tool     { grid-column: 2; grid-row: 1; padding: 0; overflow: hidden; display: none; }
+#card-todo     { grid-column: 2; grid-row: 1; }
+#card-emails   { grid-column: 3; grid-row: 1; }
+
+.card-tool-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 2px solid #f0f2f5;
+}
+
+.btn-tool-back {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: #aaa;
+  font-family: inherit;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.btn-tool-back:hover { color: #2c3e50; background-color: #f0f2f5; }
+
+#tool-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#tool-content {
+  overflow-y: auto;
+}
+
 .card {
   background-color: #fff;
   border-radius: 12px;
@@ -58,6 +96,37 @@ header h1 {
   border-bottom: 2px solid #f0f2f5;
   padding-bottom: 10px;
   margin-bottom: 16px;
+}
+
+.card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #f0f2f5;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+
+.card-header-row h2 {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.card-header-row button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  color: #aaa;
+  font-family: inherit;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.card-header-row button:hover {
+  color: #e74c3c;
+  background-color: #fdecea;
 }
 
 .label {
@@ -304,6 +373,54 @@ tr.row-baixa:hover { background-color: #e6f7ea !important; }
 /* seletor dentro da linha de edição */
 tr.editing .prio-selector {
   margin: 6px 0 0;
+}
+
+/* ── Tools menu ── */
+.tools-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tool-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #e8ecf0;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.tool-item:hover {
+  background: #f0f2f5;
+  border-color: #c8d2dc;
+}
+
+.tool-icon {
+  font-size: 1.3rem;
+  width: 36px;
+  height: 36px;
+  background: #eef2f7;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tool-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.tool-desc {
+  font-size: 0.7rem;
+  color: #999;
+  margin-top: 2px;
 }
 
 /* ── Nav mobile (oculta no desktop) ── */
