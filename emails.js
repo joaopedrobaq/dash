@@ -12,6 +12,11 @@ window.addEventListener("DOMContentLoaded", () => {
     resultado.textContent = extrairEmails(textarea.value).join("\n");
   });
 
+  document.getElementById("btn-limpar-emails").addEventListener("click", () => {
+    textarea.value = "";
+    resultado.textContent = "";
+  });
+
   resultado.addEventListener("click", () => {
     const texto = resultado.textContent;
     if (texto.trim() === "") return;

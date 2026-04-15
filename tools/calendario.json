@@ -1,0 +1,151 @@
+{
+  "tribunais": [
+    {
+      "id": "STJ",
+      "nome": "Superior Tribunal de Justiça",
+      "dias_uteis": true,
+      "recesso_dezembro_janeiro": true,
+      "recesso_personalizado": null
+    },
+    {
+      "id": "STF",
+      "nome": "Supremo Tribunal Federal",
+      "dias_uteis": true,
+      "recesso_dezembro_janeiro": true,
+      "recesso_personalizado": null
+    },
+    {
+      "id": "TRF1",
+      "nome": "Tribunal Regional Federal da 1ª Região",
+      "dias_uteis": true,
+      "recesso_dezembro_janeiro": true,
+      "recesso_personalizado": null
+    },
+    {
+      "id": "TJBA",
+      "nome": "Tribunal de Justiça da Bahia",
+      "dias_uteis": true,
+      "recesso_dezembro_janeiro": true,
+      "recesso_personalizado": null
+    },
+    {
+      "id": "CARF",
+      "nome": "Conselho Administrativo de Recursos Fiscais",
+      "dias_uteis": true,
+      "recesso_dezembro_janeiro": false,
+      "recesso_personalizado": {
+        "inicio": "12-20",
+        "fim": "01-06"
+      }
+    }
+  ],
+  "feriados": {
+    "fixos": [
+      { "data": "01-01", "descricao": "Confraternização Universal" },
+      { "data": "04-21", "descricao": "Tiradentes" },
+      { "data": "05-01", "descricao": "Dia do Trabalho" },
+      { "data": "09-07", "descricao": "Independência do Brasil" },
+      { "data": "10-12", "descricao": "Nossa Senhora Aparecida" },
+      { "data": "11-02", "descricao": "Finados" },
+      { "data": "11-15", "descricao": "Proclamação da República" },
+      { "data": "11-20", "descricao": "Consciência Negra" },
+      { "data": "12-25", "descricao": "Natal" }
+    ],
+    "2025": {
+      "nacionais_variaveis": [
+        { "data": "2025-03-03", "descricao": "Carnaval" },
+        { "data": "2025-03-04", "descricao": "Carnaval" },
+        { "data": "2025-04-18", "descricao": "Sexta-Feira da Paixão" },
+        { "data": "2025-06-19", "descricao": "Corpus Christi" }
+      ],
+      "por_tribunal": {
+        "STJ": [],
+        "STF": [],
+        "TRF1": [],
+        "TJBA": [],
+        "CARF": []
+      }
+    },
+    "2026": {
+      "nacionais_variaveis": [
+        { "data": "2026-02-16", "descricao": "Carnaval" },
+        { "data": "2026-02-17", "descricao": "Carnaval" },
+        { "data": "2026-04-03", "descricao": "Sexta-Feira da Paixão" },
+        { "data": "2026-06-04", "descricao": "Corpus Christi" }
+      ],
+      "por_tribunal": {
+        "STJ": [
+          { "data": "2026-04-01", "descricao": "Semana Santa (Segunda)", "tipo": "feriado" },
+          { "data": "2026-04-02", "descricao": "Semana Santa (Terça) — feriado forense (Lei 5.010/66)", "tipo": "feriado" },
+          { "data": "2026-08-11", "descricao": "Dia da Justiça (Lei 5.010/66)", "tipo": "feriado" },
+          { "data": "2026-12-08", "descricao": "Dia da Justiça — Imaculada Conceição (Lei 5.010/66)", "tipo": "feriado" },
+          { "data": "2026-02-18", "descricao": "Quarta-Feira de Cinzas (até 14h)", "tipo": "ponto_facultativo" },
+          { "data": "2026-04-20", "descricao": "Ponto Facultativo", "tipo": "ponto_facultativo" },
+          { "data": "2026-06-05", "descricao": "Ponto Facultativo (após Corpus Christi)", "tipo": "ponto_facultativo" },
+          { "data": "2026-08-10", "descricao": "Ponto Facultativo", "tipo": "ponto_facultativo" },
+          { "data": "2026-10-30", "descricao": "Ponto Facultativo (transferência do Dia do Servidor)", "tipo": "ponto_facultativo" },
+          { "data": "2026-12-07", "descricao": "Ponto Facultativo", "tipo": "ponto_facultativo" }
+        ],
+        "STF": [
+          { "data": "2026-04-01", "descricao": "Semana Santa (Segunda)", "tipo": "feriado" },
+          { "data": "2026-04-02", "descricao": "Semana Santa (Terça) — feriado forense (Lei 5.010/66)", "tipo": "feriado" },
+          { "data": "2026-08-11", "descricao": "Dia da Justiça (Lei 5.010/66)", "tipo": "feriado" },
+          { "data": "2026-12-08", "descricao": "Dia da Justiça — Imaculada Conceição (Lei 5.010/66)", "tipo": "feriado" },
+          { "data": "2026-02-18", "descricao": "Quarta-Feira de Cinzas (até 14h)", "tipo": "ponto_facultativo" },
+          { "data": "2026-04-20", "descricao": "Ponto Facultativo", "tipo": "ponto_facultativo" },
+          { "data": "2026-06-05", "descricao": "Ponto Facultativo (após Corpus Christi)", "tipo": "ponto_facultativo" },
+          { "data": "2026-08-10", "descricao": "Ponto Facultativo", "tipo": "ponto_facultativo" },
+          { "data": "2026-10-30", "descricao": "Ponto Facultativo (transferência do Dia do Servidor)", "tipo": "ponto_facultativo" },
+          { "data": "2026-12-07", "descricao": "Ponto Facultativo", "tipo": "ponto_facultativo" }
+        ],
+        "TRF1": [
+          { "data": "2026-04-01", "descricao": "Semana Santa (Segunda)", "tipo": "feriado" },
+          { "data": "2026-04-02", "descricao": "Semana Santa (Terça) — feriado forense (Lei 5.010/66)", "tipo": "feriado" },
+          { "data": "2026-08-11", "descricao": "Dia do Direito (Lei 5.010/66)", "tipo": "feriado" },
+          { "data": "2026-12-08", "descricao": "Dia da Justiça — Imaculada Conceição (Lei 5.010/66)", "tipo": "feriado" },
+          { "data": "2026-02-18", "descricao": "Quarta-Feira de Cinzas (até 14h)", "tipo": "ponto_facultativo" },
+          { "data": "2026-04-20", "descricao": "Ponto Facultativo", "tipo": "ponto_facultativo" },
+          { "data": "2026-06-05", "descricao": "Ponto Facultativo (após Corpus Christi)", "tipo": "ponto_facultativo" },
+          { "data": "2026-08-10", "descricao": "Ponto Facultativo", "tipo": "ponto_facultativo" },
+          { "data": "2026-10-30", "descricao": "Ponto Facultativo (transferência do Dia do Servidor)", "tipo": "ponto_facultativo" },
+          { "data": "2026-12-07", "descricao": "Ponto Facultativo", "tipo": "ponto_facultativo" }
+        ],
+        "TJBA": [
+          { "data": "2026-01-02", "descricao": "Confraternização Universal (extensão local)", "tipo": "feriado" },
+          { "data": "2026-06-22", "descricao": "São João", "tipo": "feriado" },
+          { "data": "2026-06-23", "descricao": "São João", "tipo": "feriado" },
+          { "data": "2026-06-24", "descricao": "São João", "tipo": "feriado" },
+          { "data": "2026-07-02", "descricao": "Independência da Bahia", "tipo": "feriado" },
+          { "data": "2026-07-03", "descricao": "Independência da Bahia", "tipo": "feriado" },
+          { "data": "2026-08-11", "descricao": "Dia do Magistrado / Dia do Advogado", "tipo": "feriado" },
+          { "data": "2026-12-08", "descricao": "Dia da Justiça", "tipo": "feriado" },
+          { "data": "2026-02-12", "descricao": "Pré-Carnaval (quinta-feira)", "tipo": "ponto_facultativo" },
+          { "data": "2026-02-13", "descricao": "Pré-Carnaval (sexta-feira)", "tipo": "ponto_facultativo" },
+          { "data": "2026-02-18", "descricao": "Quarta-Feira de Cinzas", "tipo": "ponto_facultativo" },
+          { "data": "2026-04-02", "descricao": "Endoenças (Quinta-Feira Santa)", "tipo": "ponto_facultativo" },
+          { "data": "2026-04-20", "descricao": "Ponto Facultativo (véspera de Tiradentes)", "tipo": "ponto_facultativo" },
+          { "data": "2026-06-05", "descricao": "Ponto Facultativo (pós-Corpus Christi)", "tipo": "ponto_facultativo" },
+          { "data": "2026-08-10", "descricao": "Dia da Criação dos Cursos Jurídicos", "tipo": "ponto_facultativo" },
+          { "data": "2026-10-30", "descricao": "Dia do Servidor Público (transferido do dia 28)", "tipo": "ponto_facultativo" },
+          { "data": "2026-12-07", "descricao": "Ponto Facultativo (véspera do Dia da Justiça)", "tipo": "ponto_facultativo" }
+        ],
+        "CARF": []
+      }
+    },
+    "2027": {
+      "nacionais_variaveis": [
+        { "data": "2027-02-15", "descricao": "Carnaval" },
+        { "data": "2027-02-16", "descricao": "Carnaval" },
+        { "data": "2027-03-26", "descricao": "Sexta-Feira da Paixão" },
+        { "data": "2027-05-27", "descricao": "Corpus Christi" }
+      ],
+      "por_tribunal": {
+        "STJ": [],
+        "STF": [],
+        "TRF1": [],
+        "TJBA": [],
+        "CARF": []
+      }
+    }
+  }
+}
