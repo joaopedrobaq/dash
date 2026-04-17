@@ -29,6 +29,13 @@
       "recesso_personalizado": null
     },
     {
+      "id": "TJPB",
+      "nome": "Tribunal de Justiça da Paraíba",
+      "dias_uteis": true,
+      "recesso_dezembro_janeiro": true,
+      "recesso_personalizado": null
+    },
+    {
       "id": "CARF",
       "nome": "Conselho Administrativo de Recursos Fiscais",
       "dias_uteis": true,
@@ -63,6 +70,7 @@
         "STF": [],
         "TRF1": [],
         "TJBA": [],
+        "TJPB": [],
         "CARF": []
       }
     },
@@ -129,6 +137,21 @@
           { "data": "2026-10-30", "descricao": "Dia do Servidor Público (transferido do dia 28)", "tipo": "ponto_facultativo" },
           { "data": "2026-12-07", "descricao": "Ponto Facultativo (véspera do Dia da Justiça)", "tipo": "ponto_facultativo" }
         ],
+        "TJPB": [
+          { "data": "2026-08-05", "descricao": "Data Magna da Paraíba (Lei Estadual nº 10.601/2015)", "tipo": "feriado" },
+          { "data": "2026-08-11", "descricao": "Fundação dos Cursos Jurídicos", "tipo": "feriado" },
+          { "data": "2026-12-08", "descricao": "Dia da Justiça", "tipo": "feriado" },
+          { "data": "2026-02-18", "descricao": "Quarta-Feira de Cinzas", "tipo": "ponto_facultativo" },
+          { "data": "2026-04-02", "descricao": "Semana Santa (Quinta-Feira Santa)", "tipo": "ponto_facultativo" },
+          { "data": "2026-04-20", "descricao": "Ponto Facultativo (véspera de Tiradentes)", "tipo": "ponto_facultativo" },
+          { "data": "2026-06-05", "descricao": "Ponto Facultativo (pós-Corpus Christi)", "tipo": "ponto_facultativo" },
+          { "data": "2026-06-22", "descricao": "Ponto Facultativo (São João antecipado)", "tipo": "ponto_facultativo" },
+          { "data": "2026-06-23", "descricao": "Ponto Facultativo (São João antecipado)", "tipo": "ponto_facultativo" },
+          { "data": "2026-06-24", "descricao": "São João", "tipo": "ponto_facultativo" },
+          { "data": "2026-08-10", "descricao": "Ponto Facultativo (compensado)", "tipo": "ponto_facultativo" },
+          { "data": "2026-10-28", "descricao": "Dia do Servidor Público", "tipo": "ponto_facultativo" },
+          { "data": "2026-12-07", "descricao": "Ponto Facultativo (véspera do Dia da Justiça)", "tipo": "ponto_facultativo" }
+        ],
         "CARF": []
       }
     },
@@ -144,6 +167,7 @@
         "STF": [],
         "TRF1": [],
         "TJBA": [],
+        "TJPB": [],
         "CARF": []
       }
     }

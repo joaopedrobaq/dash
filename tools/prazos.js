@@ -13,7 +13,7 @@ window._tools['prazos'] = {
 .pz-field:last-child { margin-bottom:0; }
 .pz-field > label:first-child { display:block; font-size:.78rem; color:#555; margin-bottom:6px; font-weight:500; }
 .pz-date-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-.pz-date-row input[type="date"] { background:#fff; border:1px solid #c8d0d8; border-radius:6px; color:#222; font-family:"Courier New",monospace; font-size:.9rem; padding:8px 10px; outline:none; transition:border-color .15s,box-shadow .15s; }
+.pz-date-row input[type="date"] { background:#fff; border:1px solid #c8d0d8; border-radius:6px; color:#222; font-family:inherit; font-size:.9rem; padding:8px 10px; outline:none; transition:border-color .15s,box-shadow .15s; }
 .pz-date-row input[type="date"]:focus { border-color:#2c3e50; box-shadow:0 0 0 3px rgba(44,62,80,.1); }
 .pz-toggle-group { display:flex; border:1px solid #c8d0d8; border-radius:6px; overflow:hidden; }
 .pz-toggle-btn { background:#fff; border:none; cursor:pointer; font-size:.78rem; padding:8px 14px; color:#666; transition:background .15s,color .15s; font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif; }
@@ -23,9 +23,9 @@ window._tools['prazos'] = {
 .pz-radio-label { display:flex; align-items:center; gap:5px; font-size:.82rem; color:#444; cursor:pointer; padding:6px 12px; background:#fff; border:1px solid #c8d0d8; border-radius:6px; transition:border-color .15s,background .15s; user-select:none; }
 .pz-radio-label.pz-radio-checked { border-color:#2c3e50; background:#e8edf2; }
 .pz-radio-label input[type="radio"] { display:none; }
-.pz-custom-num { background:#fff; border:1px solid #c8d0d8; border-radius:4px; font-family:"Courier New",monospace; font-size:.85rem; padding:4px 7px; width:58px; outline:none; }
+.pz-custom-num { background:#fff; border:1px solid #c8d0d8; border-radius:4px; font-family:inherit; font-size:.85rem; padding:4px 7px; width:58px; outline:none; }
 .pz-custom-num:focus { border-color:#2c3e50; }
-select.pz-select { width:100%; background:#fff; border:1px solid #c8d0d8; border-radius:6px; color:#222; font-family:"Courier New",monospace; font-size:.85rem; padding:8px 32px 8px 10px; outline:none; cursor:pointer; appearance:none; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; box-sizing:border-box; transition:border-color .15s; }
+select.pz-select { width:100%; background:#fff; border:1px solid #c8d0d8; border-radius:6px; color:#222; font-family:inherit; font-size:.85rem; padding:8px 32px 8px 10px; outline:none; cursor:pointer; appearance:none; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; box-sizing:border-box; transition:border-color .15s; }
 select.pz-select:focus { border-color:#2c3e50; }
 .pz-field-inline { display:flex; align-items:center; gap:12px; justify-content:space-between; }
 .pz-field-inline > label:first-child { margin-bottom:0; }
@@ -39,14 +39,18 @@ select.pz-select:focus { border-color:#2c3e50; }
 .pz-hint { font-size:.78rem; color:#7a8a99; padding:12px 16px; border-left:3px solid #c8d0d8; background:#f0f2f5; border-radius:0 6px 6px 0; margin-bottom:16px; }
 .pz-resumo-grid { display:grid; grid-template-columns:auto 1fr; gap:6px 16px; font-size:.85rem; margin:0; }
 .pz-resumo-grid dt { color:#7a8a99; font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; display:flex; align-items:center; }
-.pz-resumo-grid dd { color:#2c3e50; font-family:"Courier New",monospace; font-weight:600; font-size:.95rem; margin:0; }
+.pz-resumo-grid dd { color:#2c3e50; font-family:inherit; font-weight:600; font-size:.95rem; margin:0; }
+.pz-resumo-grid .pz-resumo-muted { color:#7a8a99; font-weight:400; font-size:.82rem; }
 .pz-note-prorr { font-size:.75rem; color:#e65100; background:#fff3e0; border:1px solid #ffcc80; border-radius:6px; padding:8px 12px; margin-top:10px; }
 .pz-note-aviso { font-size:.75rem; color:#b71c1c; background:#ffebee; border:1px solid #ef9a9a; border-radius:6px; padding:8px 12px; margin-top:10px; }
-.pz-cal-month { margin-bottom:24px; }
+.pz-cal-month { }
+#pz-calendario { display:flex; flex-wrap:wrap; justify-content:center; gap:16px; }
+.pz-cal-month { flex:0 0 calc((100% - 32px) / 3); }
+@media (max-width:768px) { .pz-cal-month { flex:0 0 100%; } }
 .pz-cal-month-title { font-size:.85rem; font-weight:600; color:#2c3e50; text-transform:capitalize; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid #dce3ea; }
 .pz-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
 .pz-cal-doh { font-size:.6rem; text-align:center; color:#999; padding:4px 0 6px; font-weight:600; }
-.pz-cal-day { aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; font-size:.75rem; border-radius:5px; position:relative; font-family:"Courier New",monospace; cursor:default; }
+.pz-cal-day { aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; font-size:.75rem; border-radius:5px; position:relative; font-family:inherit; cursor:default; }
 .pz-d-neutro { color:#ccc; }
 .pz-d-vazio { }
 .pz-d-fds { background:#f0f0f0; color:#bbb; }
@@ -54,6 +58,8 @@ select.pz-select:focus { border-color:#2c3e50; }
 .pz-d-recesso { background:#fff8e1; color:#f57f17; font-weight:500; }
 .pz-d-fer-nac { background:#ffebee; color:#c62828; font-weight:500; }
 .pz-d-fer-trib { background:#fff3e0; color:#e65100; font-weight:500; }
+.pz-d-dispon { background:#dbeafe; color:#1e40af; }
+.pz-d-pub    { background:#e0e7ff; color:#3730a3; }
 .pz-d-inicio { background:#1976d2; color:#fff; font-weight:700; border-radius:50%; }
 .pz-d-fim { background:#0d47a1; color:#fff; font-weight:700; border-radius:50%; }
 .pz-cal-day[data-tip] { cursor:help; }
@@ -139,6 +145,7 @@ select.pz-select:focus { border-color:#2c3e50; }
         { id:'STF',  nome:'Supremo Tribunal Federal',                   dias_uteis:true, recesso_dezembro_janeiro:true,  recesso_personalizado:null },
         { id:'TRF1', nome:'Tribunal Regional Federal da 1ª Região',     dias_uteis:true, recesso_dezembro_janeiro:true,  recesso_personalizado:null },
         { id:'TJBA', nome:'Tribunal de Justiça da Bahia',               dias_uteis:true, recesso_dezembro_janeiro:true,  recesso_personalizado:null },
+        { id:'TJPB', nome:'Tribunal de Justiça da Paraíba',             dias_uteis:true, recesso_dezembro_janeiro:true,  recesso_personalizado:null },
         { id:'CARF', nome:'Conselho Administrativo de Recursos Fiscais',dias_uteis:true, recesso_dezembro_janeiro:false, recesso_personalizado:{inicio:'12-20',fim:'01-06'} }
       ],
       feriados: {
@@ -158,21 +165,93 @@ select.pz-select:focus { border-color:#2c3e50; }
             {data:'2025-03-03',descricao:'Carnaval'},{data:'2025-03-04',descricao:'Carnaval'},
             {data:'2025-04-18',descricao:'Sexta-Feira da Paixão'},{data:'2025-06-19',descricao:'Corpus Christi'}
           ],
-          por_tribunal:{STJ:[],STF:[],TRF1:[],TJBA:[],CARF:[]}
+          por_tribunal:{STJ:[],STF:[],TRF1:[],TJBA:[],TJPB:[],CARF:[]}
         },
         '2026': {
           nacionais_variaveis:[
             {data:'2026-02-16',descricao:'Carnaval'},{data:'2026-02-17',descricao:'Carnaval'},
             {data:'2026-04-03',descricao:'Sexta-Feira da Paixão'},{data:'2026-06-04',descricao:'Corpus Christi'}
           ],
-          por_tribunal:{STJ:[],STF:[],TRF1:[],TJBA:[],CARF:[]}
+          por_tribunal:{
+            STJ:[
+              {data:'2026-04-01',descricao:'Semana Santa (Segunda)',tipo:'feriado'},
+              {data:'2026-04-02',descricao:'Semana Santa (Terça) — feriado forense (Lei 5.010/66)',tipo:'feriado'},
+              {data:'2026-08-11',descricao:'Dia da Justiça (Lei 5.010/66)',tipo:'feriado'},
+              {data:'2026-12-08',descricao:'Dia da Justiça — Imaculada Conceição (Lei 5.010/66)',tipo:'feriado'},
+              {data:'2026-02-18',descricao:'Quarta-Feira de Cinzas (até 14h)',tipo:'ponto_facultativo'},
+              {data:'2026-04-20',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'},
+              {data:'2026-06-05',descricao:'Ponto Facultativo (após Corpus Christi)',tipo:'ponto_facultativo'},
+              {data:'2026-08-10',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'},
+              {data:'2026-10-30',descricao:'Ponto Facultativo (transferência do Dia do Servidor)',tipo:'ponto_facultativo'},
+              {data:'2026-12-07',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'}
+            ],
+            STF:[
+              {data:'2026-04-01',descricao:'Semana Santa (Segunda)',tipo:'feriado'},
+              {data:'2026-04-02',descricao:'Semana Santa (Terça) — feriado forense (Lei 5.010/66)',tipo:'feriado'},
+              {data:'2026-08-11',descricao:'Dia da Justiça (Lei 5.010/66)',tipo:'feriado'},
+              {data:'2026-12-08',descricao:'Dia da Justiça — Imaculada Conceição (Lei 5.010/66)',tipo:'feriado'},
+              {data:'2026-02-18',descricao:'Quarta-Feira de Cinzas (até 14h)',tipo:'ponto_facultativo'},
+              {data:'2026-04-20',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'},
+              {data:'2026-06-05',descricao:'Ponto Facultativo (após Corpus Christi)',tipo:'ponto_facultativo'},
+              {data:'2026-08-10',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'},
+              {data:'2026-10-30',descricao:'Ponto Facultativo (transferência do Dia do Servidor)',tipo:'ponto_facultativo'},
+              {data:'2026-12-07',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'}
+            ],
+            TRF1:[
+              {data:'2026-04-01',descricao:'Semana Santa (Segunda)',tipo:'feriado'},
+              {data:'2026-04-02',descricao:'Semana Santa (Terça) — feriado forense (Lei 5.010/66)',tipo:'feriado'},
+              {data:'2026-08-11',descricao:'Dia do Direito (Lei 5.010/66)',tipo:'feriado'},
+              {data:'2026-12-08',descricao:'Dia da Justiça — Imaculada Conceição (Lei 5.010/66)',tipo:'feriado'},
+              {data:'2026-02-18',descricao:'Quarta-Feira de Cinzas (até 14h)',tipo:'ponto_facultativo'},
+              {data:'2026-04-20',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'},
+              {data:'2026-06-05',descricao:'Ponto Facultativo (após Corpus Christi)',tipo:'ponto_facultativo'},
+              {data:'2026-08-10',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'},
+              {data:'2026-10-30',descricao:'Ponto Facultativo (transferência do Dia do Servidor)',tipo:'ponto_facultativo'},
+              {data:'2026-12-07',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'}
+            ],
+            TJBA:[
+              {data:'2026-01-02',descricao:'Confraternização Universal (extensão local)',tipo:'feriado'},
+              {data:'2026-06-22',descricao:'São João',tipo:'feriado'},
+              {data:'2026-06-23',descricao:'São João',tipo:'feriado'},
+              {data:'2026-06-24',descricao:'São João',tipo:'feriado'},
+              {data:'2026-07-02',descricao:'Independência da Bahia',tipo:'feriado'},
+              {data:'2026-07-03',descricao:'Independência da Bahia',tipo:'feriado'},
+              {data:'2026-08-11',descricao:'Dia do Magistrado / Dia do Advogado',tipo:'feriado'},
+              {data:'2026-12-08',descricao:'Dia da Justiça',tipo:'feriado'},
+              {data:'2026-02-12',descricao:'Pré-Carnaval (quinta-feira)',tipo:'ponto_facultativo'},
+              {data:'2026-02-13',descricao:'Pré-Carnaval (sexta-feira)',tipo:'ponto_facultativo'},
+              {data:'2026-02-18',descricao:'Quarta-Feira de Cinzas',tipo:'ponto_facultativo'},
+              {data:'2026-04-02',descricao:'Endoenças (Quinta-Feira Santa)',tipo:'ponto_facultativo'},
+              {data:'2026-04-20',descricao:'Ponto Facultativo (véspera de Tiradentes)',tipo:'ponto_facultativo'},
+              {data:'2026-06-05',descricao:'Ponto Facultativo (pós-Corpus Christi)',tipo:'ponto_facultativo'},
+              {data:'2026-08-10',descricao:'Dia da Criação dos Cursos Jurídicos',tipo:'ponto_facultativo'},
+              {data:'2026-10-30',descricao:'Dia do Servidor Público (transferido do dia 28)',tipo:'ponto_facultativo'},
+              {data:'2026-12-07',descricao:'Ponto Facultativo (véspera do Dia da Justiça)',tipo:'ponto_facultativo'}
+            ],
+            TJPB:[
+              {data:'2026-08-05',descricao:'Data Magna da Paraíba (Lei Estadual nº 10.601/2015)',tipo:'feriado'},
+              {data:'2026-08-11',descricao:'Fundação dos Cursos Jurídicos',tipo:'feriado'},
+              {data:'2026-12-08',descricao:'Dia da Justiça',tipo:'feriado'},
+              {data:'2026-02-18',descricao:'Quarta-Feira de Cinzas',tipo:'ponto_facultativo'},
+              {data:'2026-04-02',descricao:'Semana Santa (Quinta-Feira Santa)',tipo:'ponto_facultativo'},
+              {data:'2026-04-20',descricao:'Ponto Facultativo (véspera de Tiradentes)',tipo:'ponto_facultativo'},
+              {data:'2026-06-05',descricao:'Ponto Facultativo (pós-Corpus Christi)',tipo:'ponto_facultativo'},
+              {data:'2026-06-22',descricao:'Ponto Facultativo (São João antecipado)',tipo:'ponto_facultativo'},
+              {data:'2026-06-23',descricao:'Ponto Facultativo (São João antecipado)',tipo:'ponto_facultativo'},
+              {data:'2026-06-24',descricao:'São João',tipo:'ponto_facultativo'},
+              {data:'2026-08-10',descricao:'Ponto Facultativo (compensado)',tipo:'ponto_facultativo'},
+              {data:'2026-10-28',descricao:'Dia do Servidor Público',tipo:'ponto_facultativo'},
+              {data:'2026-12-07',descricao:'Ponto Facultativo (véspera do Dia da Justiça)',tipo:'ponto_facultativo'}
+            ],
+            CARF:[]
+          }
         },
         '2027': {
           nacionais_variaveis:[
             {data:'2027-02-15',descricao:'Carnaval'},{data:'2027-02-16',descricao:'Carnaval'},
             {data:'2027-03-26',descricao:'Sexta-Feira da Paixão'},{data:'2027-05-27',descricao:'Corpus Christi'}
           ],
-          por_tribunal:{STJ:[],STF:[],TRF1:[],TJBA:[],CARF:[]}
+          por_tribunal:{STJ:[],STF:[],TRF1:[],TJBA:[],TJPB:[],CARF:[]}
         }
       }
     };
@@ -259,11 +338,13 @@ select.pz-select:focus { border-color:#2c3e50; }
       }
 
       // Termo inicial
-      let termoInicial;
+      let termoInicial, dateDispon = null, datePub = null;
       if (tipoSelecionado === 'disponibilizacao') {
-        const publicacao = nextUtilDay(dateRef, tribunal);
-        termoInicial     = nextUtilDay(publicacao, tribunal);
+        dateDispon   = dateRef;
+        datePub      = nextUtilDay(dateRef, tribunal);
+        termoInicial = nextUtilDay(datePub, tribunal);
       } else {
+        datePub      = dateRef;
         termoInicial = nextUtilDay(dateRef, tribunal);
       }
 
@@ -299,17 +380,23 @@ select.pz-select:focus { border-color:#2c3e50; }
       }
 
       renderResultado(termoInicial, termoFinal, prorrogadoDe, motivoProrrogacao,
-                      prorrogacaoAtiva, naoEUtil, tribunal, modalidade);
+                      prorrogacaoAtiva, naoEUtil, tribunal, modalidade, dateDispon, datePub);
     }
 
     // ── renderização do resultado ────────────────────────────────────────────
     function renderResultado(termoInicial, termoFinal, prorrogadoDe, motivoProrrogacao,
-                              prorrogacaoAtiva, originalNaoUtil, tribunal, modalidade) {
+                              prorrogacaoAtiva, originalNaoUtil, tribunal, modalidade, dateDispon, datePub) {
       mostrarVazio(false);
 
-      $('pz-resumo').innerHTML =
+      let resumoHtml = '';
+      if (dateDispon)
+        resumoHtml += `<dt>Disponibilização</dt><dd class="pz-resumo-muted">${fmtDate(dateDispon)} (${diaSem(dateDispon)})</dd>`;
+      if (datePub)
+        resumoHtml += `<dt>Publicação</dt><dd class="pz-resumo-muted">${fmtDate(datePub)} (${diaSem(datePub)})</dd>`;
+      resumoHtml +=
         `<dt>Termo inicial</dt><dd>${fmtDate(termoInicial)} (${diaSem(termoInicial)})</dd>` +
         `<dt>Termo final</dt><dd>${fmtDate(termoFinal)} (${diaSem(termoFinal)})</dd>`;
+      $('pz-resumo').innerHTML = resumoHtml;
 
       $('pz-note-prorr').innerHTML  = '';
       $('pz-note-aviso').innerHTML  = '';
@@ -321,11 +408,11 @@ select.pz-select:focus { border-color:#2c3e50; }
           `<div class="pz-note-aviso">⚠ O termo final calculado não é dia útil. Prorrogação automática desativada.</div>`;
       }
 
-      renderCalendario(termoInicial, termoFinal, tribunal, modalidade, prorrogadoDe);
+      renderCalendario(termoInicial, termoFinal, tribunal, modalidade, prorrogadoDe, dateDispon, datePub);
     }
 
     // ── calendário ───────────────────────────────────────────────────────────
-    function dayInfo(date, t0, t1, tribunal, modalidade, prorrogadoDe) {
+    function dayInfo(date, t0, t1, tribunal, modalidade, prorrogadoDe, dateDispon, datePub) {
       if (sameDay(date, t0)) return { cls:'pz-d-inicio', tip:'Termo inicial' };
       if (sameDay(date, t1)) {
         const tip = prorrogadoDe
@@ -333,6 +420,8 @@ select.pz-select:focus { border-color:#2c3e50; }
           : 'Termo final';
         return { cls:'pz-d-fim', tip };
       }
+      if (dateDispon && sameDay(date, dateDispon)) return { cls:'pz-d-dispon', tip:'Disponibilização' };
+      if (datePub    && sameDay(date, datePub))    return { cls:'pz-d-pub',    tip:'Publicação' };
       if (date < t0 || date > t1) return { cls:'pz-d-neutro', tip:null };
       if (modalidade === 'dias_corridos') return { cls:'pz-d-contado', tip:null };
       if (isWknd(date))                  return { cls:'pz-d-fds',     tip:null };
@@ -345,13 +434,14 @@ select.pz-select:focus { border-color:#2c3e50; }
       return { cls:'pz-d-contado', tip:null };
     }
 
-    function renderCalendario(t0, t1, tribunal, modalidade, prorrogadoDe) {
+    function renderCalendario(t0, t1, tribunal, modalidade, prorrogadoDe, dateDispon, datePub) {
       const el = $('pz-calendario');
       el.innerHTML = '';
       const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
       const DOW   = ['D','S','T','Q','Q','S','S'];
 
-      let cursor   = new Date(t0.getFullYear(), t0.getMonth(), 1);
+      const calStart = dateDispon || datePub || t0;
+      let cursor   = new Date(calStart.getFullYear(), calStart.getMonth(), 1);
       const endMo  = new Date(t1.getFullYear(), t1.getMonth(), 1);
       let rendered = 0;
 
@@ -386,7 +476,7 @@ select.pz-select:focus { border-color:#2c3e50; }
         const diasNoMes = new Date(yr, mo+1, 0).getDate();
         for (let d = 1; d <= diasNoMes; d++) {
           const date = new Date(yr, mo, d);
-          const info = dayInfo(date, t0, t1, tribunal, modalidade, prorrogadoDe);
+          const info = dayInfo(date, t0, t1, tribunal, modalidade, prorrogadoDe, dateDispon, datePub);
           const cell = document.createElement('div');
           cell.className = 'pz-cal-day ' + info.cls;
           cell.textContent = d;
@@ -399,17 +489,20 @@ select.pz-select:focus { border-color:#2c3e50; }
         cursor = new Date(yr, mo+1, 1);
       }
 
-      renderLegenda(t0, t1, tribunal, modalidade);
+      renderLegenda(t0, t1, tribunal, modalidade, dateDispon, datePub);
     }
 
-    function renderLegenda(t0, t1, tribunal, modalidade) {
+    function renderLegenda(t0, t1, tribunal, modalidade, dateDispon, datePub) {
       const leg = $('pz-legenda');
       leg.innerHTML = '';
-      const items = [
+      const items = [];
+      if (dateDispon) items.push({ bg:'#dbeafe', fg:'#1e40af', label:'Disponibilização' });
+      if (datePub)    items.push({ bg:'#e0e7ff', fg:'#3730a3', label:'Publicação' });
+      items.push(
         { bg:'#1976d2', label:'Termo inicial' },
         { bg:'#0d47a1', label:'Termo final' },
         { bg:'#e8f5e9', fg:'#2e7d32', label:'Dia contado' }
-      ];
+      );
       if (modalidade === 'dias_uteis') {
         items.push({ bg:'#f0f0f0', fg:'#bbb', label:'Fim de semana' });
         items.push({ bg:'#ffebee', fg:'#c62828', label:'Feriado nacional' });

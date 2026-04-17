@@ -155,7 +155,7 @@ textarea {
   min-height: 50px;
   white-space: pre-wrap;
   color: #222;
-  font-family: monospace;
+  font-family: inherit;
   font-size: 13px;
   cursor: pointer;
   transition: background 0.2s;
