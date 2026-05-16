@@ -54,6 +54,21 @@ function openTool(event, toolId) {
   }
 }
 
+function goHome() {
+  const cardTool = document.getElementById("card-tool");
+  if (cardTool.classList.contains("panel-active")) {
+    cardTool.style.display = "";
+    document.getElementById("card-todo").style.display = "";
+    document.getElementById("tool-content").innerHTML = "";
+    cardTool.classList.remove("panel-active");
+  }
+  document.querySelectorAll(".card").forEach(p => p.classList.remove("panel-active"));
+  document.getElementById("card-todo").classList.add("panel-active");
+  document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+  const tab = document.querySelector('[data-target="card-todo"]');
+  if (tab) tab.classList.add("active");
+}
+
 function closeTool() {
   const from    = window._toolOpenedFrom || "card-todo";
   const cardTool = document.getElementById("card-tool");

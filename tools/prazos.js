@@ -1,6 +1,6 @@
 window._tools = window._tools || {};
 window._tools['prazos'] = {
-  name: 'Prazos Processuais',
+  name: 'Contador de Prazos',
   icon: '📅',
   desc: 'Cálculo de prazos · calendário visual',
 
