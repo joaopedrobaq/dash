@@ -15,39 +15,35 @@
 
   <body>
     <header>
-      <h1><img src="icon.svg" alt="" class="header-logo" />PBQ</h1>
+      <h1 onclick="goHome()" style="cursor:pointer"><img src="icon.svg" alt="" class="header-logo" />PBQ</h1>
     </header>
 
     <main class="dashboard">
       <section class="card" id="card-esquerda">
         <h2>Ferramentas</h2>
         <nav class="tools-menu">
-          <a class="tool-item" href="#" onclick="openTool(event, 'honorarios')">
-            <div class="tool-icon">⚖</div>
-            <div class="tool-info">
-              <div class="tool-name">Honorários – Fazenda</div>
-              <div class="tool-desc">Art. 85, §3º CPC · cálculo progressivo</div>
-            </div>
-          </a>
           <a class="tool-item" href="#" onclick="openTool(event, 'prazos')">
             <div class="tool-icon">📅</div>
             <div class="tool-info">
-              <div class="tool-name">Prazos Processuais</div>
-              <div class="tool-desc">Cálculo de prazos · calendário visual</div>
+              <div class="tool-name">Contador de Prazos</div>
             </div>
           </a>
-          <a class="tool-item" href="#" onclick="openTool(event, 'inscricao')">
-            <div class="tool-icon">🏠</div>
+          <a class="tool-item" href="#" onclick="openTool(event, 'honorarios')">
+            <div class="tool-icon">⚖</div>
             <div class="tool-info">
-              <div class="tool-name">Inscrição Imobiliária – Salvador</div>
-              <div class="tool-desc">Calcula o dígito verificador</div>
+              <div class="tool-name">Calculadora de Honorários</div>
             </div>
           </a>
           <a class="tool-item" href="#" onclick="openTool(event, 'qrcode')">
             <div class="tool-icon">⬛</div>
             <div class="tool-info">
               <div class="tool-name">Gerador de QR Code</div>
-              <div class="tool-desc">Offline · qualquer texto ou link</div>
+            </div>
+          </a>
+          <a class="tool-item" href="#" onclick="openTool(event, 'inscricao')">
+            <div class="tool-icon">🏠</div>
+            <div class="tool-info">
+              <div class="tool-name">Calculadora de Dígito - IPTU SSA</div>
             </div>
           </a>
         </nav>

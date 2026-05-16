@@ -1,6 +1,6 @@
 window._tools = window._tools || {};
 window._tools['inscricao'] = {
-  name: 'Inscrição Imobiliária – Salvador',
+  name: 'Calculadora de Dígito - IPTU SSA',
   icon: '🏠',
   desc: 'Calcula o dígito verificador da inscrição imobiliária',
 

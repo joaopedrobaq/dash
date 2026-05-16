@@ -1,6 +1,6 @@
 window._tools = window._tools || {};
 window._tools['honorarios'] = {
-  name: 'Honorários – Fazenda',
+  name: 'Calculadora de Honorários',
   icon: '⚖',
   desc: 'Art. 85, §3º CPC · cálculo progressivo',
 
