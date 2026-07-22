@@ -67,6 +67,23 @@ select.pz-select:focus { border-color:#2c3e50; }
 .pz-legenda { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; padding-top:12px; border-top:1px solid #dce3ea; }
 .pz-leg-item { display:flex; align-items:center; gap:5px; font-size:.68rem; color:#555; }
 .pz-leg-swatch { width:13px; height:13px; border-radius:3px; flex-shrink:0; }
+.pz-text { width:100%; background:#fff; border:1px solid #c8d0d8; border-radius:6px; color:#222; font-family:inherit; font-size:.85rem; padding:8px 10px; outline:none; box-sizing:border-box; transition:border-color .15s,box-shadow .15s; }
+.pz-text:focus { border-color:#2c3e50; box-shadow:0 0 0 3px rgba(44,62,80,.1); }
+.pz-lbl-hint { color:#9aa7b3; font-weight:400; }
+.pz-arts-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.pz-arts-row .pz-text { flex:1 1 130px; min-width:0; width:auto; }
+.pz-arts-fixo { font-size:.85rem; color:#7a8a99; white-space:nowrap; }
+.pz-arts-fixo.pz-arts-cola { margin-left:-6px; }
+.pz-outro-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; align-items:center; }
+.pz-outro-row .pz-text { grid-column:1 / -1; min-width:0; }
+select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
+.pz-temp-2col { display:grid; grid-template-columns:1fr 1fr; gap:0 16px; }
+@media (max-width:768px) { .pz-temp-2col { grid-template-columns:1fr; } }
+.pz-temp-out { background:#fff; border:1px solid #c8d0d8; border-radius:8px; padding:16px 18px; font-size:.85rem; line-height:1.7; color:#222; text-align:justify; user-select:text; }
+.pz-temp-out.pz-temp-vazio { color:#9aa7b3; font-style:italic; text-align:left; }
+.pz-btn-copy { margin-top:10px; background:#2c3e50; color:#fff; border:none; border-radius:6px; padding:9px 18px; font-size:.8rem; font-family:inherit; cursor:pointer; transition:background .15s; }
+.pz-btn-copy:hover { background:#1e2b38; }
+.pz-btn-copy.pz-copied { background:#2e7d32; }
 `,
 
   html: `
@@ -133,6 +150,70 @@ select.pz-select:focus { border-color:#2c3e50; }
     </div>
 
     <div id="pz-empty" class="pz-hint">Selecione uma data para calcular o prazo.</div>
+
+    <div class="pz-card">
+      <div class="pz-card-title">Texto de tempestividade</div>
+
+      <div class="pz-field pz-field-inline">
+        <label>Ato ainda não publicado</label>
+        <label class="pz-switch">
+          <input type="checkbox" id="pz-temp-naopub" />
+          <span class="pz-switch-slider"></span>
+        </label>
+      </div>
+
+      <div class="pz-field">
+        <label>Peça a ser protocolada</label>
+        <select class="pz-select" id="pz-temp-peca"></select>
+      </div>
+
+      <div class="pz-field" id="pz-temp-outro-field" style="display:none">
+        <label>Nome da peça <span class="pz-lbl-hint">— concordância e ação ao lado</span></label>
+        <div class="pz-outro-row">
+          <input type="text" id="pz-temp-outro-nome" class="pz-text" placeholder="Ex.: Impugnação ao Cumprimento de Sentença" />
+          <select class="pz-select pz-select-sm" id="pz-temp-outro-det">
+            <option value="a presente">a presente</option>
+            <option value="o presente">o presente</option>
+            <option value="as presentes">as presentes</option>
+            <option value="os presentes">os presentes</option>
+          </select>
+          <select class="pz-select pz-select-sm" id="pz-temp-outro-acao">
+            <option value="apresentação">apresentação</option>
+            <option value="interposição">interposição</option>
+            <option value="oposição">oposição</option>
+            <option value="propositura">propositura</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="pz-temp-2col">
+        <div class="pz-field">
+          <label>Natureza do ato impugnado</label>
+          <select class="pz-select" id="pz-temp-natureza"></select>
+        </div>
+        <div class="pz-field" id="pz-temp-veiculo-field">
+          <label>Veículo de publicação</label>
+          <input type="text" id="pz-temp-veiculo" class="pz-text" value="DJEN" />
+        </div>
+      </div>
+
+      <div class="pz-field">
+        <label>ID(s) do documento <span class="pz-lbl-hint">— separe múltiplos por ponto e vírgula</span></label>
+        <input type="text" id="pz-temp-ids" class="pz-text" placeholder="2246959143; 102387675" />
+      </div>
+
+      <div class="pz-field" id="pz-temp-arts-field">
+        <label>Artigo do prazo <span class="pz-lbl-hint">— os arts. 219 e 224 são fixos</span></label>
+        <div class="pz-arts-row">
+          <span class="pz-arts-fixo" id="pz-arts-pre">arts. 219, 224 e</span>
+          <input type="text" id="pz-temp-arts" class="pz-text" />
+          <span class="pz-arts-fixo" id="pz-arts-pos">do CPC</span>
+        </div>
+      </div>
+
+      <div class="pz-temp-out" id="pz-temp-out"></div>
+      <button type="button" class="pz-btn-copy" id="pz-temp-copy">Copiar texto</button>
+    </div>
   </div>
 </div>
 `,
@@ -256,9 +337,44 @@ select.pz-select:focus { border-color:#2c3e50; }
       }
     };
 
+    // `det` rege a concordância de toda a frase; `qual` é o particípio aplicado ao
+    // ato impugnado ("embargad-", "recorrid-", "agravad-") — nulo nas peças que
+    // não impugnam nada, como uma petição que apenas atende a despacho.
+    // `art` = artigo específico do prazo; os arts. 219 e 224 (contagem e termo
+    // inicial das publicações) são padrão e ficam fixos no texto.
+    const PECAS = [
+      { id:'ed',   nome:'Embargos de Declaração', det:'os presentes', acao:'oposição',     qual:'embargad', art:'1.023',      recursal:true },
+      { id:'apel', nome:'Recurso de Apelação',    det:'o presente',   acao:'interposição', qual:'recorrid', art:'1.003, § 5º',recursal:true },
+      { id:'agin', nome:'Agravo de Instrumento',  det:'o presente',   acao:'interposição', qual:'agravad',  art:'1.003, § 5º',recursal:true },
+      { id:'agint',nome:'Agravo Interno',         det:'o presente',   acao:'interposição', qual:'agravad',  art:'1.021, § 2º',recursal:true },
+      { id:'resp', nome:'Recurso Especial',       det:'o presente',   acao:'interposição', qual:'recorrid', art:'1.003, § 5º',recursal:true },
+      { id:'rext', nome:'Recurso Extraordinário', det:'o presente',   acao:'interposição', qual:'recorrid', art:'1.003, § 5º',recursal:true },
+      { id:'rord', nome:'Recurso Ordinário',      det:'o presente',   acao:'interposição', qual:'recorrid', art:'1.003, § 5º',recursal:true },
+      { id:'pet',  nome:'Petição',                det:'a presente',   acao:'apresentação', qual:null,       art:'218, § 3º',  recursal:false },
+      { id:'manif',nome:'Manifestação',           det:'a presente',   acao:'apresentação', qual:null,       art:'218, § 3º',  recursal:false }
+    ];
+
+    // Concordância derivada do determinante escolhido.
+    const DETS = {
+      'o presente':   { adj:'tempestivo',  verbo:'revela-se'  },
+      'a presente':   { adj:'tempestiva',  verbo:'revela-se'  },
+      'os presentes': { adj:'tempestivos', verbo:'revelam-se' },
+      'as presentes': { adj:'tempestivas', verbo:'revelam-se' }
+    };
+
+    const NATUREZAS = [
+      { id:'sentenca',  nome:'Sentença',            gen:'a' },
+      { id:'acordao',   nome:'Acórdão',             gen:'o' },
+      { id:'decisao',   nome:'Decisão',             gen:'a' },
+      { id:'monoc',     nome:'Decisão Monocrática', gen:'a' },
+      { id:'despacho',  nome:'Despacho',            gen:'o' },
+      { id:'intimacao', nome:'Intimação',           gen:'a' }
+    ];
+
     const $   = id => document.getElementById(id);
     let calData = null;
     let tipoSelecionado = 'disponibilizacao';
+    let ultimoCalculo = null;
 
     // ── utilidades ──────────────────────────────────────────────────────────
     const addDays  = (d, n) => { const r = new Date(d); r.setDate(r.getDate() + n); return r; };
@@ -315,15 +431,17 @@ select.pz-select:focus { border-color:#2c3e50; }
 
     // ── cálculo ─────────────────────────────────────────────────────────────
     function calcular() {
+      ultimoCalculo = null;
+
       const dataVal = $('pz-data').value;
-      if (!dataVal || !calData) { mostrarVazio(); return; }
+      if (!dataVal || !calData) { mostrarVazio(); renderTempestividade(); return; }
 
       const [yr,mo,dy] = dataVal.split('-').map(Number);
       const dateRef = new Date(yr, mo-1, dy);
 
       const prazoPre = document.querySelector('input[name="pz-prazo"]:checked').value;
       const prazo    = prazoPre === 'outro' ? (parseInt($('pz-prazo-custom').value)||0) : parseInt(prazoPre);
-      if (prazo <= 0) { mostrarVazio(); return; }
+      if (prazo <= 0) { mostrarVazio(); renderTempestividade(); return; }
 
       const tribunalId     = $('pz-tribunal').value;
       const prorrogacaoAtiva = $('pz-prorrogacao').checked;
@@ -379,8 +497,11 @@ select.pz-select:focus { border-color:#2c3e50; }
         termoFinal = d;
       }
 
+      ultimoCalculo = { termoInicial, termoFinal, dateDispon, datePub };
+
       renderResultado(termoInicial, termoFinal, prorrogadoDe, motivoProrrogacao,
                       prorrogacaoAtiva, naoEUtil, tribunal, modalidade, dateDispon, datePub);
+      renderTempestividade();
     }
 
     // ── renderização do resultado ────────────────────────────────────────────
@@ -537,6 +658,141 @@ select.pz-select:focus { border-color:#2c3e50; }
       return false;
     }
 
+    // ── texto de tempestividade ──────────────────────────────────────────────
+    // Data por extenso no padrão forense: o dia 1 vira "1º".
+    function fmtDataForense(d) {
+      const dia = d.getDate() === 1 ? '1º' : String(d.getDate()).padStart(2,'0');
+      return `${dia}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()} (${diaSem(d)})`;
+    }
+
+    // "ID nº 123" ou "ID’s nº 123; 456; e 789"
+    function fmtIds(raw) {
+      const ids = (raw || '').split(/[;,\n]+/).map(s => s.trim()).filter(Boolean);
+      if (!ids.length) return null;
+      if (ids.length === 1) return 'ID nº ' + ids[0];
+      return 'ID’s nº ' + ids.slice(0, -1).join('; ') + '; e ' + ids[ids.length-1];
+    }
+
+    // Insere o artigo do prazo em ordem numérica entre os arts. 219 e 224, que são
+    // fixos. `pre`/`pos` espelham na interface exatamente o que sairá no texto.
+    function citacaoArts() {
+      const art = ($('pz-temp-arts').value || '').trim();
+      if (!art) return { full:'arts. 219 e 224', pre:'arts. 219 e 224', pos:'do CPC' };
+      const m = art.replace(/\./g, '').match(/^\d+/);
+      const n = m ? parseInt(m[0], 10) : 0;
+      if (n && n < 219)  return { full:`arts. ${art}, 219 e 224`, pre:'arts.',      pos:', 219 e 224 do CPC' };
+      if (n > 219 && n < 224) return { full:`arts. 219, ${art} e 224`, pre:'arts. 219,', pos:'e 224 do CPC' };
+      return { full:`arts. 219, 224 e ${art}`, pre:'arts. 219, 224 e', pos:'do CPC' };
+    }
+
+    // Peça selecionada; "outro" monta uma definição a partir dos campos livres.
+    function pecaAtual() {
+      const v = $('pz-temp-peca').value;
+      if (v !== 'outro') return PECAS.find(p => p.id === v) || PECAS[0];
+      return {
+        id:'outro',
+        nome: ($('pz-temp-outro-nome').value || '').trim() || 'Petição',
+        det:  $('pz-temp-outro-det').value,
+        acao: $('pz-temp-outro-acao').value,
+        qual: null,
+        recursal: false
+      };
+    }
+
+    function montarTexto() {
+      const peca = pecaAtual();
+      const nat  = NATUREZAS.find(n => n.id === $('pz-temp-natureza').value) || NATUREZAS[0];
+      const naoPub = $('pz-temp-naopub').checked;
+
+      const ids     = fmtIds($('pz-temp-ids').value);
+      const parIds  = ids ? ` (${ids})` : '';
+      const artNat  = nat.gen === 'a' ? 'a' : 'o';           // a Sentença / o Acórdão
+      const conc    = DETS[peca.det] || DETS['a presente'];
+      const detPeca = `${peca.det} ${peca.nome}`;
+      // Petição/manifestação não impugna nada: fica só "o Despacho (ID nº …)".
+      const qualTxt   = peca.qual ? ` ora ${peca.qual}${artNat}` : '';
+      const qualNaoPub= peca.qual ? ` ${peca.qual}${artNat}` : '';
+      const prazoNome = peca.recursal ? 'prazo recursal' : 'prazo';
+
+      if (naoPub) {
+        const cap = detPeca.charAt(0).toUpperCase() + detPeca.slice(1);
+        return `${cap} ${conc.verbo} ${conc.adj}. ` +
+          `${artNat.toUpperCase()} ${nat.nome}${qualNaoPub}${parIds} ainda não foi publicad${artNat}, ` +
+          `razão pela qual sequer se iniciou a contagem do ${prazoNome}. ` +
+          `Nos termos do art. 218, § 4º, do Código de Processo Civil, segundo o qual “será considerado ` +
+          `tempestivo o ato praticado antes do termo inicial do prazo”, é plenamente admissível a prática ` +
+          `do ato processual antes do início da fluência do ${prazoNome}.`;
+      }
+
+      if (!ultimoCalculo) return null;
+
+      const { termoInicial, termoFinal, dateDispon, datePub } = ultimoCalculo;
+      const veiculo = ($('pz-temp-veiculo').value || '').trim();
+      const noVeic  = veiculo ? ` no ${veiculo}` : '';
+      const arts    = citacaoArts().full;
+
+      const divulgacao = dateDispon
+        ? `sido disponibilizad${artNat}${noVeic} em ${fmtDataForense(dateDispon)}, ` +
+          `com publicação em ${fmtDataForense(datePub)}`
+        : `sido publicad${artNat}${noVeic} em ${fmtDataForense(datePub)}`;
+
+      return `Tendo ${artNat} ${nat.nome}${qualTxt}${parIds} ${divulgacao}, ` +
+        `o prazo para ${peca.acao} d${detPeca} teve início em ${fmtDataForense(termoInicial)} ` +
+        `e encerra-se em ${fmtDataForense(termoFinal)}, nos termos dos ${arts} do Código de Processo Civil. ` +
+        `Revela-se, portanto, tempestiva a ${peca.acao} d${detPeca} nesta data.`;
+    }
+
+    function renderTempestividade() {
+      const naoPub = $('pz-temp-naopub').checked;
+      $('pz-temp-veiculo-field').style.display = naoPub ? 'none' : '';
+      $('pz-temp-arts-field').style.display    = naoPub ? 'none' : '';
+      $('pz-temp-outro-field').style.display   = $('pz-temp-peca').value === 'outro' ? '' : 'none';
+
+      const cit = citacaoArts();
+      $('pz-arts-pre').textContent = cit.pre;
+      $('pz-arts-pos').textContent = cit.pos;
+      // fecha o gap do flex quando o sufixo começa por vírgula
+      $('pz-arts-pos').classList.toggle('pz-arts-cola', cit.pos.charAt(0) === ',');
+
+      const out = $('pz-temp-out');
+      const txt = montarTexto();
+      if (txt) {
+        out.classList.remove('pz-temp-vazio');
+        out.textContent = txt;
+        $('pz-temp-copy').style.display = '';
+      } else {
+        out.classList.add('pz-temp-vazio');
+        out.textContent = 'Calcule um prazo válido para gerar o texto.';
+        $('pz-temp-copy').style.display = 'none';
+      }
+    }
+
+    function copiarTexto() {
+      const txt = $('pz-temp-out').textContent;
+      const btn = $('pz-temp-copy');
+      const ok = () => {
+        btn.textContent = 'Copiado ✓';
+        btn.classList.add('pz-copied');
+        setTimeout(() => { btn.textContent = 'Copiar texto'; btn.classList.remove('pz-copied'); }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(ok).catch(() => fallbackCopy(txt, ok));
+      } else {
+        fallbackCopy(txt, ok);
+      }
+    }
+
+    function fallbackCopy(txt, ok) {
+      const ta = document.createElement('textarea');
+      ta.value = txt;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); ok(); } catch (e) { /* silencioso */ }
+      document.body.removeChild(ta);
+    }
+
     // ── auxiliares de UI ─────────────────────────────────────────────────────
     function mostrarVazio(vazio = true) {
       $('pz-result-area').style.display = vazio ? 'none' : '';
@@ -587,6 +843,38 @@ select.pz-select:focus { border-color:#2c3e50; }
       $('pz-data').addEventListener('change', calcular);
       sel.addEventListener('change', calcular);
       $('pz-prorrogacao').addEventListener('change', calcular);
+
+      // ── tempestividade ──
+      const selPeca = $('pz-temp-peca');
+      PECAS.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.nome;
+        selPeca.appendChild(opt);
+      });
+      const optOutro = document.createElement('option');
+      optOutro.value = 'outro';
+      optOutro.textContent = 'Outra peça…';
+      selPeca.appendChild(optOutro);
+      const selNat = $('pz-temp-natureza');
+      NATUREZAS.forEach(n => {
+        const opt = document.createElement('option');
+        opt.value = n.id;
+        opt.textContent = n.nome;
+        selNat.appendChild(opt);
+      });
+
+      $('pz-temp-arts').value = PECAS[0].art;
+      selPeca.addEventListener('change', () => {
+        const p = PECAS.find(x => x.id === selPeca.value);
+        if (p) $('pz-temp-arts').value = p.art;   // artigo segue a peça, mas continua editável
+        renderTempestividade();
+      });
+      ['pz-temp-natureza','pz-temp-veiculo','pz-temp-ids','pz-temp-arts','pz-temp-naopub',
+       'pz-temp-outro-nome','pz-temp-outro-det','pz-temp-outro-acao']
+        .forEach(id => $(id).addEventListener('input', renderTempestividade));
+      $('pz-temp-naopub').addEventListener('change', renderTempestividade);
+      $('pz-temp-copy').addEventListener('click', copiarTexto);
 
       // data padrão = hoje
       $('pz-data').value = isoStr(new Date());
