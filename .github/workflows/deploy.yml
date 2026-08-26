@@ -12,6 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # ATENÇÃO: este passo publica config.js (com SCRIPT_URL e TOKEN) junto
+      # com o site no GitHub Pages. O TOKEN não é autenticação real — só
+      # evita acesso acidental à planilha de tarefas. Se o repositório/Pages
+      # for público, qualquer visitante consegue ver esses valores no código-
+      # fonte da página e, com eles, ler e sobrescrever a lista de tarefas
+      # inteira. Veja a seção "Modelo de segurança" no README antes de
+      # publicar um repositório público.
       - name: Gerar config.js a partir dos segredos
         env:
           SCRIPT_URL: ${{ secrets.SCRIPT_URL }}
