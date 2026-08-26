@@ -13,6 +13,7 @@ const ARQUIVOS = [
   "./todo.js",
   "./emails.js",
   "./db.js",
+  "./utils.js",
   "./config.js",
   "./tools/honorarios.js",
   "./tools/prazos.js",

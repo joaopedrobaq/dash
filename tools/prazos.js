@@ -786,30 +786,17 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
       }
     }
 
-    function copiarTexto() {
+    function handleCopiarTexto() {
       const txt = $('pz-temp-out').textContent;
       const btn = $('pz-temp-copy');
-      const ok = () => {
+      copiarTexto(txt).then(() => {
         btn.textContent = 'Copiado ✓';
         btn.classList.add('pz-copied');
         setTimeout(() => { btn.textContent = 'Copiar texto'; btn.classList.remove('pz-copied'); }, 1600);
-      };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(txt).then(ok).catch(() => fallbackCopy(txt, ok));
-      } else {
-        fallbackCopy(txt, ok);
-      }
-    }
-
-    function fallbackCopy(txt, ok) {
-      const ta = document.createElement('textarea');
-      ta.value = txt;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand('copy'); ok(); } catch (e) { /* silencioso */ }
-      document.body.removeChild(ta);
+      }).catch(() => {
+        btn.textContent = 'Não foi possível copiar';
+        setTimeout(() => { btn.textContent = 'Copiar texto'; }, 1600);
+      });
     }
 
     // ── auxiliares de UI ─────────────────────────────────────────────────────
@@ -894,7 +881,7 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
        'pz-temp-outro-nome','pz-temp-outro-det','pz-temp-outro-acao']
         .forEach(id => $(id).addEventListener('input', renderTempestividade));
       $('pz-temp-naopub').addEventListener('change', renderTempestividade);
-      $('pz-temp-copy').addEventListener('click', copiarTexto);
+      $('pz-temp-copy').addEventListener('click', handleCopiarTexto);
 
       // data padrão = hoje
       $('pz-data').value = isoStr(new Date());
@@ -909,12 +896,16 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
     // divergiria dele com o tempo, e o cálculo mudaria de resultado conforme o
     // fetch funcionasse ou não, sem o usuário saber qual fonte foi usada.
     function carregarCalendario() {
+      // Reutiliza entre aberturas da ferramenta na mesma sessão — evita
+      // refazer o fetch toda vez que o usuário clica em "Contador de Prazos".
+      if (window._calCache) { setup(window._calCache); return; }
+
       $('pz-loading').innerHTML = 'Carregando calendário…';
       $('pz-loading').style.display = '';
       $('pz-main').style.display = 'none';
       fetch('./tools/calendario.json')
         .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-        .then(setup)
+        .then(dados => { window._calCache = dados; setup(dados); })
         .catch(() => {
           $('pz-loading').innerHTML =
             'Não foi possível carregar o calendário de feriados.<br>' +

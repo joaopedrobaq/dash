@@ -20,13 +20,16 @@ window.addEventListener("DOMContentLoaded", () => {
   resultado.addEventListener("click", () => {
     const texto = resultado.textContent;
     if (texto.trim() === "") return;
-    navigator.clipboard.writeText(texto).then(() => {
+    copiarTexto(texto).then(() => {
       resultado.classList.add("copiado");
       resultado.textContent = "Copiado!";
       setTimeout(() => {
         resultado.classList.remove("copiado");
         resultado.textContent = extrairEmails(textarea.value).join("\n");
       }, 500);
+    }).catch(() => {
+      resultado.textContent = "Não foi possível copiar — selecione o texto manualmente.";
+      setTimeout(() => { resultado.textContent = extrairEmails(textarea.value).join("\n"); }, 2000);
     });
   });
 });

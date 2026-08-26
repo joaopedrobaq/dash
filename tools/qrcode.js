@@ -228,8 +228,10 @@ window._tools['qrcode'] = (function () {
 
       btnCp.addEventListener('click', function () {
         if (!_svg) return;
-        navigator.clipboard.writeText(_svg).then(function () {
+        copiarTexto(_svg).then(function () {
           showToast('SVG copiado!');
+        }).catch(function () {
+          showToast('Não foi possível copiar.');
         });
       });
 
