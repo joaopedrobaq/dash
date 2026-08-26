@@ -35,7 +35,10 @@ select.pz-select:focus { border-color:#2c3e50; }
 .pz-switch-slider::before { content:''; position:absolute; width:18px; height:18px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform .2s; box-shadow:0 1px 3px rgba(0,0,0,.3); }
 .pz-switch input:checked + .pz-switch-slider { background:#2c3e50; }
 .pz-switch input:checked + .pz-switch-slider::before { transform:translateX(20px); }
-.pz-loading { padding:24px; text-align:center; color:#888; font-size:.85rem; }
+.pz-loading { padding:24px; text-align:center; color:#888; font-size:.85rem; line-height:1.7; }
+.pz-loading code { background:#eee; border-radius:3px; padding:1px 5px; font-size:.85em; }
+.pz-loading button { margin-top:10px; background:#2c3e50; color:#fff; border:none; border-radius:6px; padding:8px 16px; font-size:.8rem; font-family:inherit; cursor:pointer; }
+.pz-loading button:hover { background:#1e2b38; }
 .pz-hint { font-size:.78rem; color:#7a8a99; padding:12px 16px; border-left:3px solid #c8d0d8; background:#f0f2f5; border-radius:0 6px 6px 0; margin-bottom:16px; }
 .pz-resumo-grid { display:grid; grid-template-columns:auto 1fr; gap:6px 16px; font-size:.85rem; margin:0; }
 .pz-resumo-grid dt { color:#7a8a99; font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; display:flex; align-items:center; }
@@ -43,6 +46,8 @@ select.pz-select:focus { border-color:#2c3e50; }
 .pz-resumo-grid .pz-resumo-muted { color:#7a8a99; font-weight:400; font-size:.82rem; }
 .pz-note-prorr { font-size:.75rem; color:#e65100; background:#fff3e0; border:1px solid #ffcc80; border-radius:6px; padding:8px 12px; margin-top:10px; }
 .pz-note-aviso { font-size:.75rem; color:#b71c1c; background:#ffebee; border:1px solid #ef9a9a; border-radius:6px; padding:8px 12px; margin-top:10px; }
+.pz-note-cobertura { font-size:.78rem; font-weight:600; color:#8a5a00; background:#fff3cd; border:2px solid #ffca6a; border-radius:6px; padding:10px 14px; margin-bottom:14px; }
+.pz-note-cobertura ul { margin:6px 0 0; padding-left:18px; font-weight:400; }
 .pz-cal-month { }
 #pz-calendario { display:flex; flex-wrap:wrap; justify-content:center; gap:16px; }
 .pz-cal-month { flex:0 0 calc((100% - 32px) / 3); }
@@ -138,6 +143,7 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
     <div id="pz-result-area" style="display:none">
       <div class="pz-result-card">
         <div class="pz-card-title">Resultado</div>
+        <div id="pz-note-cobertura"></div>
         <dl class="pz-resumo-grid" id="pz-resumo"></dl>
         <div id="pz-note-prorr"></div>
         <div id="pz-note-aviso"></div>
@@ -219,124 +225,6 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
 `,
 
   init: function () {
-    // Dados embutidos como fallback caso o fetch falhe (file://)
-    const CAL_FALLBACK = {
-      tribunais: [
-        { id:'STJ',  nome:'Superior Tribunal de Justiça',              dias_uteis:true, recesso_dezembro_janeiro:true,  recesso_personalizado:null },
-        { id:'STF',  nome:'Supremo Tribunal Federal',                   dias_uteis:true, recesso_dezembro_janeiro:true,  recesso_personalizado:null },
-        { id:'TRF1', nome:'Tribunal Regional Federal da 1ª Região',     dias_uteis:true, recesso_dezembro_janeiro:true,  recesso_personalizado:null },
-        { id:'TJBA', nome:'Tribunal de Justiça da Bahia',               dias_uteis:true, recesso_dezembro_janeiro:true,  recesso_personalizado:null },
-        { id:'TJPB', nome:'Tribunal de Justiça da Paraíba',             dias_uteis:true, recesso_dezembro_janeiro:true,  recesso_personalizado:null },
-        { id:'CARF', nome:'Conselho Administrativo de Recursos Fiscais',dias_uteis:true, recesso_dezembro_janeiro:false, recesso_personalizado:{inicio:'12-20',fim:'01-06'} }
-      ],
-      feriados: {
-        fixos: [
-          {data:'01-01',descricao:'Confraternização Universal'},
-          {data:'04-21',descricao:'Tiradentes'},
-          {data:'05-01',descricao:'Dia do Trabalho'},
-          {data:'09-07',descricao:'Independência do Brasil'},
-          {data:'10-12',descricao:'Nossa Senhora Aparecida'},
-          {data:'11-02',descricao:'Finados'},
-          {data:'11-15',descricao:'Proclamação da República'},
-          {data:'11-20',descricao:'Consciência Negra'},
-          {data:'12-25',descricao:'Natal'}
-        ],
-        '2025': {
-          nacionais_variaveis:[
-            {data:'2025-03-03',descricao:'Carnaval'},{data:'2025-03-04',descricao:'Carnaval'},
-            {data:'2025-04-18',descricao:'Sexta-Feira da Paixão'},{data:'2025-06-19',descricao:'Corpus Christi'}
-          ],
-          por_tribunal:{STJ:[],STF:[],TRF1:[],TJBA:[],TJPB:[],CARF:[]}
-        },
-        '2026': {
-          nacionais_variaveis:[
-            {data:'2026-02-16',descricao:'Carnaval'},{data:'2026-02-17',descricao:'Carnaval'},
-            {data:'2026-04-03',descricao:'Sexta-Feira da Paixão'},{data:'2026-06-04',descricao:'Corpus Christi'}
-          ],
-          por_tribunal:{
-            STJ:[
-              {data:'2026-04-01',descricao:'Semana Santa (Segunda)',tipo:'feriado'},
-              {data:'2026-04-02',descricao:'Semana Santa (Terça) — feriado forense (Lei 5.010/66)',tipo:'feriado'},
-              {data:'2026-08-11',descricao:'Dia da Justiça (Lei 5.010/66)',tipo:'feriado'},
-              {data:'2026-12-08',descricao:'Dia da Justiça — Imaculada Conceição (Lei 5.010/66)',tipo:'feriado'},
-              {data:'2026-02-18',descricao:'Quarta-Feira de Cinzas (até 14h)',tipo:'ponto_facultativo'},
-              {data:'2026-04-20',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'},
-              {data:'2026-06-05',descricao:'Ponto Facultativo (após Corpus Christi)',tipo:'ponto_facultativo'},
-              {data:'2026-08-10',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'},
-              {data:'2026-10-30',descricao:'Ponto Facultativo (transferência do Dia do Servidor)',tipo:'ponto_facultativo'},
-              {data:'2026-12-07',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'}
-            ],
-            STF:[
-              {data:'2026-04-01',descricao:'Semana Santa (Segunda)',tipo:'feriado'},
-              {data:'2026-04-02',descricao:'Semana Santa (Terça) — feriado forense (Lei 5.010/66)',tipo:'feriado'},
-              {data:'2026-08-11',descricao:'Dia da Justiça (Lei 5.010/66)',tipo:'feriado'},
-              {data:'2026-12-08',descricao:'Dia da Justiça — Imaculada Conceição (Lei 5.010/66)',tipo:'feriado'},
-              {data:'2026-02-18',descricao:'Quarta-Feira de Cinzas (até 14h)',tipo:'ponto_facultativo'},
-              {data:'2026-04-20',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'},
-              {data:'2026-06-05',descricao:'Ponto Facultativo (após Corpus Christi)',tipo:'ponto_facultativo'},
-              {data:'2026-08-10',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'},
-              {data:'2026-10-30',descricao:'Ponto Facultativo (transferência do Dia do Servidor)',tipo:'ponto_facultativo'},
-              {data:'2026-12-07',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'}
-            ],
-            TRF1:[
-              {data:'2026-04-01',descricao:'Semana Santa (Segunda)',tipo:'feriado'},
-              {data:'2026-04-02',descricao:'Semana Santa (Terça) — feriado forense (Lei 5.010/66)',tipo:'feriado'},
-              {data:'2026-08-11',descricao:'Dia do Direito (Lei 5.010/66)',tipo:'feriado'},
-              {data:'2026-12-08',descricao:'Dia da Justiça — Imaculada Conceição (Lei 5.010/66)',tipo:'feriado'},
-              {data:'2026-02-18',descricao:'Quarta-Feira de Cinzas (até 14h)',tipo:'ponto_facultativo'},
-              {data:'2026-04-20',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'},
-              {data:'2026-06-05',descricao:'Ponto Facultativo (após Corpus Christi)',tipo:'ponto_facultativo'},
-              {data:'2026-08-10',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'},
-              {data:'2026-10-30',descricao:'Ponto Facultativo (transferência do Dia do Servidor)',tipo:'ponto_facultativo'},
-              {data:'2026-12-07',descricao:'Ponto Facultativo',tipo:'ponto_facultativo'}
-            ],
-            TJBA:[
-              {data:'2026-01-02',descricao:'Confraternização Universal (extensão local)',tipo:'feriado'},
-              {data:'2026-06-22',descricao:'São João',tipo:'feriado'},
-              {data:'2026-06-23',descricao:'São João',tipo:'feriado'},
-              {data:'2026-06-24',descricao:'São João',tipo:'feriado'},
-              {data:'2026-07-02',descricao:'Independência da Bahia',tipo:'feriado'},
-              {data:'2026-07-03',descricao:'Independência da Bahia',tipo:'feriado'},
-              {data:'2026-08-11',descricao:'Dia do Magistrado / Dia do Advogado',tipo:'feriado'},
-              {data:'2026-12-08',descricao:'Dia da Justiça',tipo:'feriado'},
-              {data:'2026-02-12',descricao:'Pré-Carnaval (quinta-feira)',tipo:'ponto_facultativo'},
-              {data:'2026-02-13',descricao:'Pré-Carnaval (sexta-feira)',tipo:'ponto_facultativo'},
-              {data:'2026-02-18',descricao:'Quarta-Feira de Cinzas',tipo:'ponto_facultativo'},
-              {data:'2026-04-02',descricao:'Endoenças (Quinta-Feira Santa)',tipo:'ponto_facultativo'},
-              {data:'2026-04-20',descricao:'Ponto Facultativo (véspera de Tiradentes)',tipo:'ponto_facultativo'},
-              {data:'2026-06-05',descricao:'Ponto Facultativo (pós-Corpus Christi)',tipo:'ponto_facultativo'},
-              {data:'2026-08-10',descricao:'Dia da Criação dos Cursos Jurídicos',tipo:'ponto_facultativo'},
-              {data:'2026-10-30',descricao:'Dia do Servidor Público (transferido do dia 28)',tipo:'ponto_facultativo'},
-              {data:'2026-12-07',descricao:'Ponto Facultativo (véspera do Dia da Justiça)',tipo:'ponto_facultativo'}
-            ],
-            TJPB:[
-              {data:'2026-08-05',descricao:'Data Magna da Paraíba (Lei Estadual nº 10.601/2015)',tipo:'feriado'},
-              {data:'2026-08-11',descricao:'Fundação dos Cursos Jurídicos',tipo:'feriado'},
-              {data:'2026-12-08',descricao:'Dia da Justiça',tipo:'feriado'},
-              {data:'2026-02-18',descricao:'Quarta-Feira de Cinzas',tipo:'ponto_facultativo'},
-              {data:'2026-04-02',descricao:'Semana Santa (Quinta-Feira Santa)',tipo:'ponto_facultativo'},
-              {data:'2026-04-20',descricao:'Ponto Facultativo (véspera de Tiradentes)',tipo:'ponto_facultativo'},
-              {data:'2026-06-05',descricao:'Ponto Facultativo (pós-Corpus Christi)',tipo:'ponto_facultativo'},
-              {data:'2026-06-22',descricao:'Ponto Facultativo (São João antecipado)',tipo:'ponto_facultativo'},
-              {data:'2026-06-23',descricao:'Ponto Facultativo (São João antecipado)',tipo:'ponto_facultativo'},
-              {data:'2026-06-24',descricao:'São João',tipo:'ponto_facultativo'},
-              {data:'2026-08-10',descricao:'Ponto Facultativo (compensado)',tipo:'ponto_facultativo'},
-              {data:'2026-10-28',descricao:'Dia do Servidor Público',tipo:'ponto_facultativo'},
-              {data:'2026-12-07',descricao:'Ponto Facultativo (véspera do Dia da Justiça)',tipo:'ponto_facultativo'}
-            ],
-            CARF:[]
-          }
-        },
-        '2027': {
-          nacionais_variaveis:[
-            {data:'2027-02-15',descricao:'Carnaval'},{data:'2027-02-16',descricao:'Carnaval'},
-            {data:'2027-03-26',descricao:'Sexta-Feira da Paixão'},{data:'2027-05-27',descricao:'Corpus Christi'}
-          ],
-          por_tribunal:{STJ:[],STF:[],TRF1:[],TJBA:[],TJPB:[],CARF:[]}
-        }
-      }
-    };
-
     // `det` rege a concordância de toda a frase; `qual` é o particípio aplicado ao
     // ato impugnado ("embargad-", "recorrid-", "agravad-") — nulo nas peças que
     // não impugnam nada, como uma petição que apenas atende a despacho.
@@ -423,6 +311,30 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
       return true;
     }
 
+    // Verifica se calData tem cobertura de feriados para os anos do período
+    // calculado. Sem isso, um ano ausente faz o cálculo ignorar feriados em
+    // silêncio (termo final antecipado) — melhor avisar do que calcular errado
+    // com a mesma aparência de um resultado confiável.
+    function verificarCobertura(t0, t1, tribunalId) {
+      const problemas = [];
+      const tribunalReal = (tribunalId && tribunalId !== '_uteis' && tribunalId !== '_corridos') ? tribunalId : null;
+      const anoIni = t0.getFullYear(), anoFim = t1.getFullYear();
+      for (let ano = anoIni; ano <= anoFim; ano++) {
+        const yrData = calData.feriados[String(ano)];
+        if (!yrData) {
+          problemas.push(`Sem dados de feriados nacionais variáveis (Carnaval, Páscoa, Corpus Christi) para ${ano}.`);
+          continue;
+        }
+        if (tribunalReal) {
+          const lista = yrData.por_tribunal ? yrData.por_tribunal[tribunalReal] : null;
+          if (!lista || lista.length === 0) {
+            problemas.push(`Sem feriados do ${tribunalReal} cadastrados para ${ano}.`);
+          }
+        }
+      }
+      return problemas;
+    }
+
     function nextUtilDay(from, tribunal) {
       let d = addDays(from, 1), s = 0;
       while (!isUtilDay(d, tribunal) && s++ < 500) d = addDays(d, 1);
@@ -499,15 +411,29 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
 
       ultimoCalculo = { termoInicial, termoFinal, dateDispon, datePub };
 
+      const problemasCobertura = verificarCobertura(termoInicial, termoFinal, tribunalId);
+
       renderResultado(termoInicial, termoFinal, prorrogadoDe, motivoProrrogacao,
-                      prorrogacaoAtiva, naoEUtil, tribunal, modalidade, dateDispon, datePub);
+                      prorrogacaoAtiva, naoEUtil, tribunal, modalidade, dateDispon, datePub,
+                      problemasCobertura);
       renderTempestividade();
     }
 
     // ── renderização do resultado ────────────────────────────────────────────
     function renderResultado(termoInicial, termoFinal, prorrogadoDe, motivoProrrogacao,
-                              prorrogacaoAtiva, originalNaoUtil, tribunal, modalidade, dateDispon, datePub) {
+                              prorrogacaoAtiva, originalNaoUtil, tribunal, modalidade, dateDispon, datePub,
+                              problemasCobertura) {
       mostrarVazio(false);
+
+      const covEl = $('pz-note-cobertura');
+      if (problemasCobertura && problemasCobertura.length) {
+        covEl.innerHTML = '⚠ Cálculo possivelmente incorreto — confira manualmente:' +
+          '<ul>' + problemasCobertura.map(p => `<li>${p}</li>`).join('') + '</ul>';
+        covEl.className = 'pz-note-cobertura';
+      } else {
+        covEl.innerHTML = '';
+        covEl.className = '';
+      }
 
       let resumoHtml = '';
       if (dateDispon)
@@ -885,9 +811,25 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
     }
 
     // ── carga do JSON ────────────────────────────────────────────────────────
-    fetch('./tools/calendario.json')
-      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(setup)
-      .catch(() => setup(CAL_FALLBACK));
+    // Sem fallback embutido: um fallback duplicado dos dados do calendário.json
+    // divergiria dele com o tempo, e o cálculo mudaria de resultado conforme o
+    // fetch funcionasse ou não, sem o usuário saber qual fonte foi usada.
+    function carregarCalendario() {
+      $('pz-loading').innerHTML = 'Carregando calendário…';
+      $('pz-loading').style.display = '';
+      $('pz-main').style.display = 'none';
+      fetch('./tools/calendario.json')
+        .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+        .then(setup)
+        .catch(() => {
+          $('pz-loading').innerHTML =
+            'Não foi possível carregar o calendário de feriados.<br>' +
+            'Abra esta ferramenta pelo servidor local (ex.: <code>python -m http.server</code>), não por <code>file://</code>.' +
+            '<br><button type="button" id="pz-retry">Tentar novamente</button>';
+          const retry = document.getElementById('pz-retry');
+          if (retry) retry.addEventListener('click', carregarCalendario);
+        });
+    }
+    carregarCalendario();
   }
 };
