@@ -609,7 +609,10 @@ tr.editing .prio-selector {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  color: var(--azul-700);
 }
+
+.tool-icon svg { width: 20px; height: 20px; }
 
 .tool-name {
   font-size: 0.82rem;
