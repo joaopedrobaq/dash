@@ -1,10 +1,12 @@
 window.addEventListener("DOMContentLoaded", async () => {
   let items = [];
   let dragSrc = null;
+  let carregouOk = false;
 
   const tbody  = document.getElementById("todo-body");
   const form   = document.getElementById("todo-form");
   const status = document.getElementById("sync-status");
+  const banner = document.getElementById("todo-erro-banner");
 
   const PRIORIDADES = [
     { key: "alta",  label: "Alta"  },
@@ -21,7 +23,37 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  /* ── Habilita/desabilita o formulário conforme o estado de sincronização ──
+     Enquanto a carga inicial não tiver sucesso, qualquer alteração local seria
+     perdida no primeiro save() — então o formulário fica bloqueado. */
+  function setFormHabilitado(habilitado) {
+    form.classList.toggle("form-desabilitado", !habilitado);
+    form.querySelectorAll("input, button").forEach(el => { el.disabled = !habilitado; });
+  }
+
+  function mostrarBanner(msg) {
+    banner.innerHTML = "";
+    const p = document.createElement("p");
+    p.textContent = msg;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = "Tentar novamente";
+    btn.addEventListener("click", carregar);
+    banner.appendChild(p);
+    banner.appendChild(btn);
+    banner.style.display = "";
+  }
+
+  function esconderBanner() {
+    banner.style.display = "none";
+    banner.innerHTML = "";
+  }
+
   function save() {
+    if (!carregouOk) {
+      setStatus("⚠ Sem sincronização — alterações não serão salvas", "sync-error");
+      return;
+    }
     setStatus("Salvando…", "sync-loading");
     DB.save(items)
       .then(()  => setStatus("Salvo ✓", "sync-ok"))
@@ -79,15 +111,18 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     tr.innerHTML = `
       <td class="drag-handle">⠿</td>
-      <td class="col-cliente">${item.cliente}</td>
-      <td class="col-tema">${item.tema}</td>
-      <td class="col-pasta">${item.pasta}</td>
+      <td class="col-cliente"></td>
+      <td class="col-tema"></td>
+      <td class="col-pasta"></td>
       <td class="col-actions">
         <button class="btn-pause ${item.pausado ? "is-pausado" : ""}" data-i="${i}" title="${item.pausado ? "Retomar" : "Pausar"}">${item.pausado ? "▶" : "⏸"}</button>
         <button class="btn-edit" data-i="${i}" title="Editar">✎</button>
         <button class="btn-del"  data-i="${i}" title="Remover">✕</button>
       </td>
     `;
+    tr.querySelector(".col-cliente").textContent = item.cliente;
+    tr.querySelector(".col-tema").textContent    = item.tema;
+    tr.querySelector(".col-pasta").textContent   = item.pasta;
 
     // Drag — desktop
     tr.addEventListener("dragstart", (e) => {
@@ -178,9 +213,9 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     tr.innerHTML = `
       <td class="drag-handle"></td>
-      <td class="col-cliente"><input class="edit-input" value="${item.cliente}" /></td>
-      <td class="col-tema"><input class="edit-input" value="${item.tema}" /></td>
-      <td class="col-pasta"><input class="edit-input" value="${item.pasta}" /></td>
+      <td class="col-cliente"><input class="edit-input" /></td>
+      <td class="col-tema"><input class="edit-input" /></td>
+      <td class="col-pasta"><input class="edit-input" /></td>
       <td class="col-actions">
         <button class="btn-save" title="Salvar">✓</button>
         <button class="btn-cancel" title="Cancelar">✕</button>
@@ -191,6 +226,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     tdTema.appendChild(buildPrioSelector(prioSelecionada, (k) => { prioSelecionada = k; }));
 
     const [inCliente, inTema, inPasta] = tr.querySelectorAll(".edit-input");
+    inCliente.value = item.cliente;
+    inTema.value    = item.tema;
+    inPasta.value   = item.pasta;
 
     tr.querySelector(".btn-save").addEventListener("click", () => {
       items[i] = {
@@ -300,13 +338,25 @@ window.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("f-cliente").focus();
   });
 
-  /* ── Carga inicial ── */
-  setStatus("Carregando…", "sync-loading");
-  try {
-    items = await DB.load();
-    setStatus("");
-  } catch {
-    setStatus("⚠ Falha ao carregar dados", "sync-error");
+  /* ── Carga inicial (também reusada pelo botão "Tentar novamente") ── */
+  async function carregar() {
+    setFormHabilitado(false);
+    esconderBanner();
+    setStatus("Carregando…", "sync-loading");
+    try {
+      const dados = await DB.load();
+      if (!Array.isArray(dados)) throw new Error("resposta inválida");
+      items = dados;
+      carregouOk = true;
+      setFormHabilitado(true);
+      setStatus("");
+    } catch {
+      carregouOk = false;
+      setStatus("⚠ Falha ao carregar dados", "sync-error");
+      mostrarBanner("Não foi possível carregar as tarefas. Nada será salvo até a sincronização ser restabelecida.");
+    }
+    render();
   }
-  render();
+
+  await carregar();
 });
