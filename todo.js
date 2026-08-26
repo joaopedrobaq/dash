@@ -3,11 +3,13 @@ window.addEventListener("DOMContentLoaded", async () => {
   let dragSrc = null;
   let carregouOk = false;
   let saveTimer = null;
+  let concluidasAbertas = false;
 
   const tbody  = document.getElementById("todo-body");
   const form   = document.getElementById("todo-form");
   const status = document.getElementById("sync-status");
   const banner = document.getElementById("todo-erro-banner");
+  const busca  = document.getElementById("todo-busca");
 
   const PRIORIDADES = [
     { key: "alta",  label: "Alta"  },
@@ -166,6 +168,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       <td class="col-pasta"></td>
       <td class="col-actions">
         <button class="btn-pause ${item.pausado ? "is-pausado" : ""}" data-i="${i}" title="${item.pausado ? "Retomar" : "Pausar"}" aria-label="${item.pausado ? "Retomar" : "Pausar"}" ${desabilitado}>${item.pausado ? "▶" : "⏸"}</button>
+        <button class="btn-done" data-i="${i}" title="Concluir" aria-label="Concluir" ${desabilitado}>✓</button>
         <button class="btn-edit" data-i="${i}" title="Editar" aria-label="Editar" ${desabilitado}>✎</button>
         <button class="btn-del"  data-i="${i}" title="Remover" aria-label="Remover" ${desabilitado}>✕</button>
       </td>
@@ -327,6 +330,47 @@ window.addEventListener("DOMContentLoaded", async () => {
     return tr;
   }
 
+  /* ── Linha de tarefa concluída — sem drag, sem pausar/editar; só reabrir e excluir ── */
+  function renderConcluidaRow(item, i) {
+    const tr = document.createElement("tr");
+    tr.className = "row-concluida";
+    tr.dataset.index = i;
+
+    const desabilitado = carregouOk ? "" : "disabled";
+    tr.innerHTML = `
+      <td class="drag-handle" aria-hidden="true"></td>
+      <td class="col-cliente"></td>
+      <td class="col-tema"></td>
+      <td class="col-pasta"></td>
+      <td class="col-actions">
+        <button class="btn-reabrir" data-i="${i}" title="Reabrir" aria-label="Reabrir" ${desabilitado}>↺</button>
+        <button class="btn-del" data-i="${i}" title="Remover" aria-label="Remover" ${desabilitado}>✕</button>
+      </td>
+    `;
+    tr.querySelector(".col-cliente").textContent = item.cliente;
+    tr.querySelector(".col-tema").textContent    = item.tema;
+    tr.querySelector(".col-pasta").textContent   = item.pasta;
+
+    return tr;
+  }
+
+  /* ── Cabeçalho da seção de concluídas — clicável, recolhida por padrão ── */
+  function concluidasSectionRow(contagem) {
+    const tr = document.createElement("tr");
+    tr.className = "section-row section-row-concluidas";
+    tr.innerHTML =
+      `<td colspan="5" class="section-label section-label-clicavel">` +
+      `<span class="section-toggle">${concluidasAbertas ? "▾" : "▸"}</span> Concluídas ` +
+      `<span class="section-count">· ${contagem}</span></td>`;
+
+    tr.querySelector(".section-label").addEventListener("click", () => {
+      concluidasAbertas = !concluidasAbertas;
+      render();
+    });
+
+    return tr;
+  }
+
   /* ── Render principal ── */
   function render(editingIndex = null) {
     tbody.innerHTML = "";
@@ -336,23 +380,30 @@ window.addEventListener("DOMContentLoaded", async () => {
       media: { label: "Prioridade média", rows: [], pausados: [] },
       baixa: { label: "Baixa prioridade", rows: [], pausados: [] },
     };
+    const concluidas = [];
 
     items.forEach((item, i) => {
+      if (item.concluido) { concluidas.push(i); return; }
       const p  = item.prioridade || "baixa";
       const tr = i === editingIndex ? renderEditRow(item, i) : renderRow(item, i);
       (item.pausado ? grupos[p].pausados : grupos[p].rows).push(tr);
     });
 
-    let totalRenderizado = 0;
     Object.entries(grupos).forEach(([key, grupo]) => {
       const todos = [...grupo.rows, ...grupo.pausados];
       if (todos.length === 0) return;
-      totalRenderizado += todos.length;
       tbody.appendChild(sectionRow(grupo.label, key, todos.length));
       todos.forEach(tr => tbody.appendChild(tr));
     });
 
-    if (totalRenderizado === 0) {
+    if (concluidas.length > 0) {
+      tbody.appendChild(concluidasSectionRow(concluidas.length));
+      if (concluidasAbertas) {
+        concluidas.forEach(i => tbody.appendChild(renderConcluidaRow(items[i], i)));
+      }
+    }
+
+    if (items.length === 0) {
       const tr = document.createElement("tr");
       tr.innerHTML = carregouOk
         ? `<td colspan="5" class="todo-vazio">Nenhuma tarefa. Adicione a primeira acima.</td>`
@@ -368,6 +419,22 @@ window.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
+    tbody.querySelectorAll(".btn-done").forEach(btn => {
+      btn.addEventListener("click", () => {
+        items[+btn.dataset.i].concluido = true;
+        save();
+        render();
+      });
+    });
+
+    tbody.querySelectorAll(".btn-reabrir").forEach(btn => {
+      btn.addEventListener("click", () => {
+        items[+btn.dataset.i].concluido = false;
+        save();
+        render();
+      });
+    });
+
     tbody.querySelectorAll(".btn-edit").forEach(btn => {
       btn.addEventListener("click", () => render(+btn.dataset.i));
     });
@@ -375,6 +442,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     tbody.querySelectorAll(".btn-del").forEach(btn => {
       btn.addEventListener("click", () => excluirComDesfazer(+btn.dataset.i));
     });
+
+    aplicarFiltro();
   }
 
   /* ── Exclusão com desfazer ──
@@ -425,6 +494,37 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     desfazerPendente = { item, index: i, timer, toast };
   }
+
+  /* ── Busca / filtro rápido ──
+     Puramente visual — não altera `items`. Reaplicada no fim de cada
+     render() para sobreviver a mutações (pausar, editar, excluir...). */
+  function normalizar(s) {
+    var faixa = String.fromCharCode(768) + '-' + String.fromCharCode(879);
+    return (s || "").toLowerCase().normalize("NFD").replace(new RegExp('[' + faixa + ']', 'g'), "");
+  }
+
+  function aplicarFiltro() {
+    const termo = normalizar(busca.value.trim());
+
+    tbody.querySelectorAll("tr[data-index]").forEach(tr => {
+      tr.style.display = (!termo || normalizar(tr.textContent).includes(termo)) ? "" : "none";
+    });
+
+    // Esconde o cabeçalho de uma seção se nenhuma linha dela sobreviveu ao filtro.
+    tbody.querySelectorAll(".section-row").forEach(sec => {
+      if (!termo) { sec.style.display = ""; return; }
+      let temVisivel = false;
+      for (let el = sec.nextElementSibling; el && !el.classList.contains("section-row"); el = el.nextElementSibling) {
+        if (el.style.display !== "none") { temVisivel = true; break; }
+      }
+      sec.style.display = temVisivel ? "" : "none";
+    });
+  }
+
+  busca.addEventListener("input", aplicarFiltro);
+  busca.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { busca.value = ""; aplicarFiltro(); busca.blur(); }
+  });
 
   /* ── Formulário de adição ── */
   let prioNovo = "baixa";
