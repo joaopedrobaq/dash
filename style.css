@@ -23,6 +23,11 @@
   box-sizing: border-box;
 }
 
+:focus-visible {
+  outline: 2px solid var(--azul-700);
+  outline-offset: 2px;
+}
+
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--fundo);
@@ -66,10 +71,14 @@ header h1:hover {
   align-items: start;
 }
 
-#card-esquerda { grid-column: 1; grid-row: 1; }
+/* Colunas laterais ficam sticky: a coluna do meio (tarefas/ferramenta)
+   costuma ser bem mais alta e empurrar a rolagem da página — sem isso,
+   rolar até o fim das tarefas levava embora as ferramentas e o
+   extrator de e-mails, que ficam bem mais curtos. */
+#card-esquerda { grid-column: 1; grid-row: 1; position: sticky; top: 24px; }
 #card-tool     { grid-column: 2; grid-row: 1; padding: 0; overflow: hidden; display: none; }
 #card-todo     { grid-column: 2; grid-row: 1; }
-#card-emails   { grid-column: 3; grid-row: 1; }
+#card-emails   { grid-column: 3; grid-row: 1; position: sticky; top: 24px; }
 
 /* Desktop: ferramentas e e-mails ficam sempre visíveis; só a coluna do
    meio alterna entre tarefas e a ferramenta aberta. */
@@ -250,6 +259,10 @@ textarea {
   font-size: 11px;
   text-transform: uppercase;
   border-bottom: 2px solid var(--fundo);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--superficie);
 }
 
 #todo-table .col-cliente,
@@ -306,15 +319,16 @@ tr.drag-over {
   border: none;
   cursor: pointer;
   font-size: 14px;
-  padding: 2px 5px;
+  min-width: 32px;
+  min-height: 32px;
   border-radius: 4px;
-  color: #ccc;
+  color: var(--txt-3);
 }
 
-.btn-del:hover    { color: #e74c3c; background-color: #fdecea; }
+.btn-del:hover    { color: var(--alta); background-color: #fdecea; }
 .btn-edit:hover   { color: #2980b9; background-color: #eaf4fb; }
 .btn-save:hover   { color: #27ae60; background-color: #eafaf1; }
-.btn-cancel:hover { color: #e74c3c; background-color: #fdecea; }
+.btn-cancel:hover { color: var(--alta); background-color: #fdecea; }
 .btn-pause:hover  { color: #e67e22; background-color: #fef6ec; }
 .btn-pause.is-pausado { color: #e67e22; }
 
@@ -431,10 +445,13 @@ form.form-desabilitado { opacity: .5; pointer-events: none; }
   .todo-toast { bottom: 76px; }
 }
 
-/* ── Prioridade — cores de linha ── */
-tr.row-alta  { background-color: #fff0f0; }
-tr.row-media { background-color: #fffbe6; }
-tr.row-baixa { background-color: #f2fbf4; }
+/* ── Prioridade — cores de linha ──
+   A cor de fundo sozinha (pastéis muito próximos em luminância) some em
+   escala de cinza ou para daltônicos assim que o cabeçalho de seção sai
+   da tela — por isso a borda com a cor plena da prioridade. */
+tr.row-alta  { background-color: #fff0f0; border-left: 3px solid var(--alta); }
+tr.row-media { background-color: #fffbe6; border-left: 3px solid var(--media); }
+tr.row-baixa { background-color: #f2fbf4; border-left: 3px solid var(--baixa); }
 
 tr.row-alta:hover  { background-color: #ffe5e5 !important; }
 tr.row-media:hover { background-color: #fff5cc !important; }
@@ -446,14 +463,43 @@ tr.row-baixa:hover { background-color: #e6f7ea !important; }
   border-radius: 4px;
 }
 .section-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  color: #999;
+  color: var(--txt-3);
   padding: 10px 8px 4px !important;
   border-bottom: none !important;
   background: var(--superficie) !important;
+  position: sticky;
+  top: 29px;
+  z-index: 1;
+}
+
+.section-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.section-dot.section-dot-alta  { background: var(--alta); }
+.section-dot.section-dot-media { background: var(--media); }
+.section-dot.section-dot-baixa { background: var(--baixa); }
+
+.section-count {
+  font-weight: 400;
+  color: #bbb;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.todo-vazio {
+  text-align: center;
+  color: var(--txt-3);
+  padding: 32px 16px !important;
+  font-size: 13px;
 }
 
 /* ── Botões de prioridade ── */
@@ -565,6 +611,7 @@ tr.editing .prio-selector {
 
   .card {
     display: none;
+    position: static;
     min-height: unset;
     border-radius: 0;
     box-shadow: none;
@@ -722,13 +769,13 @@ tr.editing .prio-selector {
     display: flex !important;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
     width: auto !important;
     white-space: nowrap;
     padding: 0 12px !important;
   }
 
-  .btn-edit, .btn-del { font-size: 16px; padding: 4px 6px; }
+  .btn-pause, .btn-edit, .btn-del { font-size: 18px; min-width: 44px; min-height: 44px; }
 
   /* ── Linha de edição ── */
   tr.editing {
@@ -767,7 +814,7 @@ tr.editing .prio-selector {
 
   /* ── Seção separadora ── */
   .section-row { display: block !important; }
-  .section-label { padding: 12px 16px 4px !important; }
+  .section-label { padding: 12px 16px 4px !important; top: 0; }
 
   /* ── E-mails ── */
   #card-emails { padding: 16px; }

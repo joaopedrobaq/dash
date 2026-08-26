@@ -15,7 +15,7 @@
 
   <body data-view="tarefas">
     <header>
-      <h1 onclick="goHome()" style="cursor:pointer"><img src="icon.svg" alt="" class="header-logo" />PBQ</h1>
+      <h1 onclick="goHome()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goHome();}" tabindex="0" role="button" aria-label="Ir para a tela inicial" style="cursor:pointer"><img src="icon.svg" alt="" class="header-logo" />PBQ</h1>
     </header>
 
     <main class="dashboard">
@@ -58,7 +58,7 @@
       </section>
 
       <section class="card" id="card-todo">
-        <h2>Tarefas <span id="sync-status"></span></h2>
+        <h2>Tarefas <span id="sync-status" role="status" aria-live="polite"></span></h2>
 
         <div id="todo-erro-banner" class="todo-erro-banner" style="display:none"></div>
 
