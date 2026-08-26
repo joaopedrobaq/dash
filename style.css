@@ -184,6 +184,19 @@ body[data-view="tool"] #card-todo { display: none; }
   margin: 14px 0 6px;
 }
 
+.todo-busca {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 13px;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  font-family: inherit;
+  margin-bottom: 14px;
+  outline: none;
+  transition: border-color .15s;
+}
+.todo-busca:focus { border-color: var(--azul-700); }
+
 textarea {
   width: 100%;
   height: 140px;
@@ -314,7 +327,9 @@ tr.drag-over {
 .btn-edit,
 .btn-save,
 .btn-cancel,
-.btn-pause {
+.btn-pause,
+.btn-done,
+.btn-reabrir {
   background: none;
   border: none;
   cursor: pointer;
@@ -325,12 +340,14 @@ tr.drag-over {
   color: var(--txt-3);
 }
 
-.btn-del:hover    { color: var(--alta); background-color: #fdecea; }
-.btn-edit:hover   { color: #2980b9; background-color: #eaf4fb; }
-.btn-save:hover   { color: #27ae60; background-color: #eafaf1; }
-.btn-cancel:hover { color: var(--alta); background-color: #fdecea; }
-.btn-pause:hover  { color: #e67e22; background-color: #fef6ec; }
+.btn-del:hover     { color: var(--alta); background-color: #fdecea; }
+.btn-edit:hover    { color: #2980b9; background-color: #eaf4fb; }
+.btn-save:hover    { color: #27ae60; background-color: #eafaf1; }
+.btn-cancel:hover  { color: var(--alta); background-color: #fdecea; }
+.btn-pause:hover   { color: #e67e22; background-color: #fef6ec; }
 .btn-pause.is-pausado { color: #e67e22; }
+.btn-done:hover    { color: #27ae60; background-color: #eafaf1; }
+.btn-reabrir:hover { color: #2980b9; background-color: #eaf4fb; }
 
 /* ── Item pausado ── */
 tr.row-pausado .col-cliente,
@@ -500,6 +517,17 @@ tr.row-baixa:hover { background-color: #e6f7ea !important; }
   color: var(--txt-3);
   padding: 32px 16px !important;
   font-size: 13px;
+}
+
+/* ── Tarefas concluídas ── */
+.section-label-clicavel { cursor: pointer; user-select: none; }
+.section-toggle { display: inline-block; width: 12px; }
+
+tr.row-concluida .col-cliente,
+tr.row-concluida .col-tema,
+tr.row-concluida .col-pasta {
+  text-decoration: line-through;
+  color: #aaa;
 }
 
 /* ── Botões de prioridade ── */
@@ -678,6 +706,14 @@ tr.editing .prio-selector {
     padding: 0 16px;
   }
 
+  .todo-busca,
+  .todo-erro-banner {
+    display: block;
+    width: calc(100% - 32px);
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
   .todo-inputs {
     flex-direction: column;
     gap: 10px;
@@ -775,7 +811,7 @@ tr.editing .prio-selector {
     padding: 0 12px !important;
   }
 
-  .btn-pause, .btn-edit, .btn-del { font-size: 18px; min-width: 44px; min-height: 44px; }
+  .btn-pause, .btn-edit, .btn-del, .btn-done, .btn-reabrir { font-size: 18px; min-width: 44px; min-height: 44px; }
 
   /* ── Linha de edição ── */
   tr.editing {
