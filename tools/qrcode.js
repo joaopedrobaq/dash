@@ -103,15 +103,15 @@ window._tools['qrcode'] = (function () {
 
     css: `
 .qr-tool { padding: 20px 20px 32px; }
-.qr-field label { display: block; font-size: .78rem; color: #555; font-weight: 500; margin-bottom: 6px; }
+.qr-field label { display: block; font-size: .78rem; color: var(--txt-2); font-weight: 500; margin-bottom: 6px; }
 .qr-field textarea {
   width: 100%; box-sizing: border-box; resize: vertical;
-  background: #fff; border: 1px solid #c8d0d8; border-radius: 6px;
-  font-family: inherit; font-size: .95rem; color: #222;
+  background: var(--superficie); border: 1px solid var(--borda); border-radius: 6px;
+  font-family: inherit; font-size: .95rem; color: var(--txt);
   padding: 10px 12px; outline: none; min-height: 80px;
   transition: border-color .15s, box-shadow .15s;
 }
-.qr-field textarea:focus { border-color: #2c3e50; box-shadow: 0 0 0 3px rgba(44,62,80,.1); }
+.qr-field textarea:focus { border-color: var(--azul-700); box-shadow: 0 0 0 3px rgba(44,62,80,.1); }
 .qr-field textarea::placeholder { color: #bbb; }
 .qr-counter { font-size: .7rem; color: #aaa; text-align: right; margin-top: 3px; margin-bottom: 14px; }
 .qr-box {
@@ -129,12 +129,12 @@ window._tools['qrcode'] = (function () {
   transition: opacity .15s, transform .1s;
 }
 .qr-btn:active { transform: scale(.97); }
-.qr-btn-dl  { background: #2c3e50; color: #fff; }
-.qr-btn-cp  { background: #e8edf2; color: #2c3e50; }
+.qr-btn-dl  { background: var(--azul-700); color: #fff; }
+.qr-btn-cp  { background: #e8edf2; color: var(--azul-700); }
 .qr-btn:hover { opacity: .88; }
 .qr-toast {
   position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-  background: #2c3e50; color: #fff; padding: 8px 20px; border-radius: 20px;
+  background: var(--azul-700); color: #fff; padding: 8px 20px; border-radius: 20px;
   font-size: .82rem; pointer-events: none; opacity: 0;
   transition: opacity .25s; z-index: 9999;
 }

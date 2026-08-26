@@ -1,17 +1,38 @@
+/* ── Tokens de cor ──
+   Paleta base usada em style.css e no bloco `css:` de cada ferramenta em
+   tools/*.js (o <style> de cada ferramenta é injetado no <head> pelo
+   app.js, então essas variáveis do :root valem lá também). */
+:root {
+  --azul-900: #1e2b38;
+  --azul-700: #2c3e50;
+  --fundo: #f0f2f5;
+  --superficie: #fff;
+  --borda: #c8d0d8;
+  --borda-clara: #dce3ea;
+  --txt: #222;
+  --txt-2: #555;
+  --txt-3: #5a6a78;
+  --alta: #c62828;
+  --media: #f57f17;
+  --baixa: #2e7d32;
+  --raio: 12px;
+  --raio-sm: 6px;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f0f2f5;
+  background-color: var(--fundo);
   margin: 0;
   padding: 0;
   min-height: 100vh;
 }
 
 header {
-  background-color: #2c3e50;
+  background-color: var(--azul-700);
   color: #fff;
   padding: 16px 32px;
 }
@@ -46,26 +67,30 @@ header h1:hover {
 }
 
 #card-esquerda { grid-column: 1; grid-row: 1; }
-#card-tool              { grid-column: 2; grid-row: 1; padding: 0; overflow: hidden; display: none; }
-#card-tool.panel-active { display: block; }
+#card-tool     { grid-column: 2; grid-row: 1; padding: 0; overflow: hidden; display: none; }
 #card-todo     { grid-column: 2; grid-row: 1; }
 #card-emails   { grid-column: 3; grid-row: 1; }
+
+/* Desktop: ferramentas e e-mails ficam sempre visíveis; só a coluna do
+   meio alterna entre tarefas e a ferramenta aberta. */
+body[data-view="tool"] #card-tool { display: block; }
+body[data-view="tool"] #card-todo { display: none; }
 
 .card-tool-header {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
-  border-bottom: 2px solid #f0f2f5;
+  border-bottom: 2px solid var(--fundo);
 }
 
 .btn-tool-back {
-  background: #f0f2f5;
+  background: var(--fundo);
   border: 1px solid #c8d2dc;
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--azul-700);
   font-family: inherit;
   padding: 6px 14px;
   border-radius: 6px;
@@ -74,10 +99,17 @@ header h1:hover {
 }
 .btn-tool-back:hover { background: #e2e8ee; border-color: #a8b8c8; }
 
+/* Texto do botão voltar por breakpoint — no desktop a ferramenta
+   substitui a coluna de tarefas; no mobile, a de ferramentas. */
+.btn-tool-back-label::before { content: "Tarefas"; }
+@media (max-width: 768px) {
+  .btn-tool-back-label::before { content: "Ferramentas"; }
+}
+
 #tool-title {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--azul-700);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -87,7 +119,7 @@ header h1:hover {
 }
 
 .card {
-  background-color: #fff;
+  background-color: var(--superficie);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 24px;
@@ -98,10 +130,10 @@ header h1:hover {
   margin-top: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--azul-700);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 2px solid #f0f2f5;
+  border-bottom: 2px solid var(--fundo);
   padding-bottom: 10px;
   margin-bottom: 16px;
 }
@@ -110,7 +142,7 @@ header h1:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 2px solid #f0f2f5;
+  border-bottom: 2px solid var(--fundo);
   padding-bottom: 10px;
   margin-bottom: 16px;
 }
@@ -139,7 +171,7 @@ header h1:hover {
 
 .label {
   font-size: 0.85rem;
-  color: #555;
+  color: var(--txt-2);
   margin: 14px 0 6px;
 }
 
@@ -161,7 +193,7 @@ textarea {
   border-radius: 8px;
   min-height: 50px;
   white-space: pre-wrap;
-  color: #222;
+  color: var(--txt);
   font-family: inherit;
   font-size: 13px;
   cursor: pointer;
@@ -193,7 +225,7 @@ textarea {
   padding: 7px 14px;
   font-size: 18px;
   line-height: 1;
-  background-color: #2c3e50;
+  background-color: var(--azul-700);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -217,7 +249,7 @@ textarea {
   font-weight: 600;
   font-size: 11px;
   text-transform: uppercase;
-  border-bottom: 2px solid #f0f2f5;
+  border-bottom: 2px solid var(--fundo);
 }
 
 #todo-table .col-cliente,
@@ -236,7 +268,7 @@ textarea {
 }
 
 #todo-table tbody tr {
-  border-bottom: 1px solid #f0f2f5;
+  border-bottom: 1px solid var(--fundo);
   transition: background 0.15s;
 }
 
@@ -368,7 +400,7 @@ form.form-desabilitado { opacity: .5; pointer-events: none; }
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background: #2c3e50;
+  background: var(--azul-700);
   color: #fff;
   padding: 10px 16px;
   border-radius: 8px;
@@ -382,8 +414,8 @@ form.form-desabilitado { opacity: .5; pointer-events: none; }
 }
 
 .todo-toast button {
-  background: #fff;
-  color: #2c3e50;
+  background: var(--superficie);
+  color: var(--azul-700);
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
@@ -393,7 +425,7 @@ form.form-desabilitado { opacity: .5; pointer-events: none; }
   white-space: nowrap;
   font-family: inherit;
 }
-.todo-toast button:hover { background: #dce3ea; }
+.todo-toast button:hover { background: var(--borda-clara); }
 
 @media (max-width: 768px) {
   .todo-toast { bottom: 76px; }
@@ -421,7 +453,7 @@ tr.row-baixa:hover { background-color: #e6f7ea !important; }
   color: #999;
   padding: 10px 8px 4px !important;
   border-bottom: none !important;
-  background: #fff !important;
+  background: var(--superficie) !important;
 }
 
 /* ── Botões de prioridade ── */
@@ -475,7 +507,7 @@ tr.editing .prio-selector {
 }
 
 .tool-item:hover {
-  background: #f0f2f5;
+  background: var(--fundo);
   border-color: #c8d2dc;
 }
 
@@ -494,7 +526,7 @@ tr.editing .prio-selector {
 .tool-name {
   font-size: 0.82rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--azul-700);
 }
 
 .tool-desc {
@@ -539,7 +571,10 @@ tr.editing .prio-selector {
     padding: 16px 0;
   }
 
-  .card.panel-active {
+  body[data-view="tarefas"] #card-todo,
+  body[data-view="emails"] #card-emails,
+  body[data-view="ferramentas"] #card-esquerda,
+  body[data-view="tool"] #card-tool {
     display: block;
   }
 
@@ -555,7 +590,7 @@ tr.editing .prio-selector {
     left: 0;
     right: 0;
     height: 60px;
-    background: #fff;
+    background: var(--superficie);
     border-top: 1px solid #ddd;
     z-index: 100;
   }
@@ -576,7 +611,7 @@ tr.editing .prio-selector {
   }
 
   .nav-tab.active {
-    color: #2c3e50;
+    color: var(--azul-700);
   }
 
   .nav-icon {
@@ -630,7 +665,7 @@ tr.editing .prio-selector {
     display: grid;
     grid-template-columns: 36px 1fr auto;
     align-items: center;
-    border-bottom: 1px solid #f0f2f5;
+    border-bottom: 1px solid var(--fundo);
     border-left: 4px solid transparent;
     padding: 10px 0;
   }
@@ -667,7 +702,7 @@ tr.editing .prio-selector {
 
   .col-tema {
     grid-column: 2; grid-row: 2;
-    font-size: 14px; font-weight: 600; color: #2c3e50;
+    font-size: 14px; font-weight: 600; color: var(--azul-700);
     white-space: normal !important;
     width: auto !important;
     padding: 1px 8px !important;
@@ -699,7 +734,7 @@ tr.editing .prio-selector {
   tr.editing {
     display: block !important;
     padding: 12px 16px;
-    border-bottom: 1px solid #f0f2f5;
+    border-bottom: 1px solid var(--fundo);
     background: #f8f9fa;
   }
 

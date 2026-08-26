@@ -7,27 +7,27 @@ window._tools['inscricao'] = {
   css: `
 .ins-tool { padding: 20px 20px 32px; }
 .ins-field { margin-bottom: 16px; }
-.ins-field label { display: block; font-size: .78rem; color: #555; font-weight: 500; margin-bottom: 6px; }
+.ins-field label { display: block; font-size: .78rem; color: var(--txt-2); font-weight: 500; margin-bottom: 6px; }
 .ins-field input {
   width: 100%; box-sizing: border-box;
-  background: #fff; border: 1px solid #c8d0d8; border-radius: 6px;
+  background: var(--superficie); border: 1px solid var(--borda); border-radius: 6px;
   font-family: inherit; font-size: 1.4rem; font-weight: 700; letter-spacing: .12em;
-  color: #2c3e50; padding: 10px 14px; outline: none;
+  color: var(--azul-700); padding: 10px 14px; outline: none;
   transition: border-color .15s, box-shadow .15s;
 }
-.ins-field input:focus { border-color: #2c3e50; box-shadow: 0 0 0 3px rgba(44,62,80,.1); }
+.ins-field input:focus { border-color: var(--azul-700); box-shadow: 0 0 0 3px rgba(44,62,80,.1); }
 .ins-field input::placeholder { color: #bbb; font-weight: 400; letter-spacing: 0; }
-.ins-result-label { font-size: .78rem; color: #555; font-weight: 500; margin-bottom: 6px; }
+.ins-result-label { font-size: .78rem; color: var(--txt-2); font-weight: 500; margin-bottom: 6px; }
 .ins-result {
   padding: 14px 16px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 8px;
-  min-height: 50px; white-space: pre-wrap; color: #222; font-family: inherit;
+  min-height: 50px; white-space: pre-wrap; color: var(--txt); font-family: inherit;
   font-size: 1.5rem; font-weight: 700; letter-spacing: .1em;
   cursor: pointer; transition: background .2s; user-select: all;
 }
 .ins-result.ins-vazio { color: #bbb; font-weight: 400; font-size: .9rem; letter-spacing: 0; }
 .ins-result.ins-copiado { background: #d4edda; border-color: #c3e6cb; color: #155724; }
 .ins-result.ins-erro { background: #fff3cd; border-color: #ffeaa7; color: #856404; font-size: .9rem; letter-spacing: 0; font-weight: 400; }
-.ins-hint { font-size: .72rem; color: #7a8a99; margin-top: 8px; }
+.ins-hint { font-size: .72rem; color: var(--txt-3); margin-top: 8px; }
 `,
 
   html: `
