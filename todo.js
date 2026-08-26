@@ -160,14 +160,14 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     const desabilitado = carregouOk ? "" : "disabled";
     tr.innerHTML = `
-      <td class="drag-handle">⠿</td>
+      <td class="drag-handle" aria-hidden="true">⠿</td>
       <td class="col-cliente"></td>
       <td class="col-tema"></td>
       <td class="col-pasta"></td>
       <td class="col-actions">
-        <button class="btn-pause ${item.pausado ? "is-pausado" : ""}" data-i="${i}" title="${item.pausado ? "Retomar" : "Pausar"}" ${desabilitado}>${item.pausado ? "▶" : "⏸"}</button>
-        <button class="btn-edit" data-i="${i}" title="Editar" ${desabilitado}>✎</button>
-        <button class="btn-del"  data-i="${i}" title="Remover" ${desabilitado}>✕</button>
+        <button class="btn-pause ${item.pausado ? "is-pausado" : ""}" data-i="${i}" title="${item.pausado ? "Retomar" : "Pausar"}" aria-label="${item.pausado ? "Retomar" : "Pausar"}" ${desabilitado}>${item.pausado ? "▶" : "⏸"}</button>
+        <button class="btn-edit" data-i="${i}" title="Editar" aria-label="Editar" ${desabilitado}>✎</button>
+        <button class="btn-del"  data-i="${i}" title="Remover" aria-label="Remover" ${desabilitado}>✕</button>
       </td>
     `;
     tr.querySelector(".col-cliente").textContent = item.cliente;
@@ -305,11 +305,14 @@ window.addEventListener("DOMContentLoaded", async () => {
   }
 
   /* ── Linha de seção (também é drop target) ── */
-  function sectionRow(label, prioridade) {
+  function sectionRow(label, prioridade, contagem) {
     const tr = document.createElement("tr");
     tr.className = "section-row";
     tr.dataset.prioridade = prioridade;
-    tr.innerHTML = `<td colspan="5" class="section-label">${label}</td>`;
+    tr.innerHTML =
+      `<td colspan="5" class="section-label">` +
+      `<span class="section-dot section-dot-${prioridade}"></span>${label} ` +
+      `<span class="section-count">· ${contagem}</span></td>`;
 
     tr.addEventListener("dragover", (e) => { e.preventDefault(); tr.classList.add("drag-over"); });
     tr.addEventListener("dragleave", () => tr.classList.remove("drag-over"));
@@ -340,12 +343,22 @@ window.addEventListener("DOMContentLoaded", async () => {
       (item.pausado ? grupos[p].pausados : grupos[p].rows).push(tr);
     });
 
+    let totalRenderizado = 0;
     Object.entries(grupos).forEach(([key, grupo]) => {
       const todos = [...grupo.rows, ...grupo.pausados];
       if (todos.length === 0) return;
-      tbody.appendChild(sectionRow(grupo.label, key));
+      totalRenderizado += todos.length;
+      tbody.appendChild(sectionRow(grupo.label, key, todos.length));
       todos.forEach(tr => tbody.appendChild(tr));
     });
+
+    if (totalRenderizado === 0) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = carregouOk
+        ? `<td colspan="5" class="todo-vazio">Nenhuma tarefa. Adicione a primeira acima.</td>`
+        : `<td colspan="5" class="todo-vazio">Nenhuma tarefa em cache local.</td>`;
+      tbody.appendChild(tr);
+    }
 
     tbody.querySelectorAll(".btn-pause").forEach(btn => {
       btn.addEventListener("click", () => {
