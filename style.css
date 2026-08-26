@@ -81,9 +81,23 @@ header h1:hover {
 #card-emails   { grid-column: 3; grid-row: 1; position: sticky; top: 24px; }
 
 /* Desktop: ferramentas e e-mails ficam sempre visíveis; só a coluna do
-   meio alterna entre tarefas e a ferramenta aberta. */
-body[data-view="tool"] #card-tool { display: block; }
+   meio alterna entre tarefas e a ferramenta aberta.
+   #tool-content já tinha overflow-y:auto, mas sem altura restrita nunca
+   chegava a rolar de verdade — quem rolava era a página inteira, o que
+   também quebra position:sticky dentro do painel (o CSS usa o ancestral
+   com overflow:hidden como referência de rolagem, mesmo sem ele rolar).
+   Por isso o painel vira uma coluna flex com altura máxima aqui. */
+body[data-view="tool"] #card-tool {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 64px);
+}
 body[data-view="tool"] #card-todo { display: none; }
+
+#card-tool #tool-content {
+  flex: 1;
+  min-height: 0;
+}
 
 .card-tool-header {
   display: flex;
@@ -651,6 +665,15 @@ tr.editing .prio-selector {
   body[data-view="ferramentas"] #card-esquerda,
   body[data-view="tool"] #card-tool {
     display: block;
+  }
+
+  /* No mobile a página inteira rola normalmente (nav fixa embaixo) — desfaz
+     a altura restrita/flex que só faz sentido no layout de 3 colunas. */
+  body[data-view="tool"] #card-tool {
+    max-height: none;
+  }
+  #card-tool #tool-content {
+    flex: none;
   }
 
   .card h2 {

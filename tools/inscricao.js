@@ -27,7 +27,7 @@ window._tools['inscricao'] = {
 .ins-result.ins-vazio { color: #bbb; font-weight: 400; font-size: .9rem; letter-spacing: 0; }
 .ins-result.ins-copiado { background: #d4edda; border-color: #c3e6cb; color: #155724; }
 .ins-result.ins-erro { background: #fff3cd; border-color: #ffeaa7; color: #856404; font-size: .9rem; letter-spacing: 0; font-weight: 400; }
-.ins-hint { font-size: .72rem; color: var(--txt-3); margin-top: 8px; }
+.ins-hint { font-size: .75rem; color: var(--txt-3); margin-top: 8px; }
 `,
 
   html: `

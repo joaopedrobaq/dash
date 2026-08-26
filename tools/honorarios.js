@@ -24,7 +24,7 @@ window._tools['honorarios'] = {
 .hon-tool input[type="range"] { flex:1; -webkit-appearance:none; appearance:none; height:4px; background:var(--borda); border-radius:2px; outline:none; cursor:pointer; }
 .hon-tool input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--azul-700); cursor:pointer; box-shadow:0 1px 4px rgba(44,62,80,.35); }
 .hon-tool .h-pct-display { font-family:inherit; font-size:.9rem; color:var(--azul-700); font-weight:600; min-width:3.5rem; text-align:right; }
-.hon-tool .h-hint { font-size:.7rem; color:var(--txt-3); margin-top:5px; }
+.hon-tool .h-hint { font-size:.75rem; color:var(--txt-3); margin-top:5px; }
 .hon-tool .h-band-table { width:100%; border-collapse:collapse; font-size:.78rem; margin-top:4px; }
 .hon-tool .h-band-table thead tr th { background:var(--borda-clara); font-size:.62rem; letter-spacing:.07em; text-transform:uppercase; color:#6a7a88; padding:7px 10px; text-align:left; border-bottom:2px solid var(--borda); }
 .hon-tool .h-band-table tbody tr { border-bottom:1px solid var(--borda-clara); transition:background .1s; }
@@ -35,7 +35,7 @@ window._tools['honorarios'] = {
 .hon-tool .h-band-table tbody td.h-accent { color:var(--azul-700); font-weight:600; }
 .hon-tool .h-badge-active { display:inline-block; font-size:.6rem; background:#b8d4ec; color:var(--azul-700); border:1px solid #90b8d8; border-radius:3px; padding:1px 6px; margin-left:6px; vertical-align:middle; font-weight:600; letter-spacing:.04em; }
 .hon-tool .h-result-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-top:4px; }
-.hon-tool .h-result-item label { font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; color:var(--txt-3); margin-bottom:4px; border:none; padding:0; }
+.hon-tool .h-result-item label { font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--txt-3); margin-bottom:4px; border:none; padding:0; }
 .hon-tool .h-val { font-size:1.45rem; color:var(--azul-700); font-weight:700; line-height:1.1; }
 .hon-tool .h-sub { font-size:.72rem; color:var(--txt-3); margin-top:3px; }
 .hon-tool .h-divider { border:none; border-top:1px solid var(--borda-clara); margin:18px 0; }
