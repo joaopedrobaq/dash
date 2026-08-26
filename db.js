@@ -6,11 +6,13 @@ const DB = (() => {
   }
 
   async function save(items) {
-    await fetch(`${CONFIG.SCRIPT_URL}?token=${CONFIG.TOKEN}`, {
+    const res = await fetch(`${CONFIG.SCRIPT_URL}?token=${CONFIG.TOKEN}`, {
       method: "POST",
       headers: { "Content-Type": "text/plain" },
       body: JSON.stringify(items),
     });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res;
   }
 
   return { load, save };

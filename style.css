@@ -327,6 +327,39 @@ tr.editing .edit-input {
 #sync-status.sync-ok      { background: #dff5e3; color: #1a6b30; }
 #sync-status.sync-error   { background: #fdecea; color: #a00; }
 
+/* ── Banner de erro de sincronização (bloqueia o formulário) ── */
+.todo-erro-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fdecea;
+  border: 1px solid #f3b3ac;
+  color: #a00;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-size: 13px;
+}
+
+.todo-erro-banner p { margin: 0; }
+
+.todo-erro-banner button {
+  background: #a00;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.todo-erro-banner button:hover { background: #870000; }
+
+form.form-desabilitado { opacity: .5; pointer-events: none; }
+
 /* ── Prioridade — cores de linha ── */
 tr.row-alta  { background-color: #fff0f0; }
 tr.row-media { background-color: #fffbe6; }
