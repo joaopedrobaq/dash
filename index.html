@@ -10,6 +10,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="PBQ" />
+    <meta name="theme-color" content="#2c3e50" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
 
@@ -123,5 +124,15 @@
     <script src="emails.js"></script>
     <script src="todo.js"></script>
     <script src="app.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("sw.js").catch(() => {
+            // Falha em registrar não deve quebrar o app — só significa que o
+            // modo offline não estará disponível nesta sessão.
+          });
+        });
+      }
+    </script>
   </body>
 </html>
