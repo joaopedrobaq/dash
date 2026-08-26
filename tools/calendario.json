@@ -59,12 +59,6 @@
       { "data": "12-25", "descricao": "Natal" }
     ],
     "2025": {
-      "nacionais_variaveis": [
-        { "data": "2025-03-03", "descricao": "Carnaval" },
-        { "data": "2025-03-04", "descricao": "Carnaval" },
-        { "data": "2025-04-18", "descricao": "Sexta-Feira da Paixão" },
-        { "data": "2025-06-19", "descricao": "Corpus Christi" }
-      ],
       "por_tribunal": {
         "STJ": [],
         "STF": [],
@@ -75,12 +69,6 @@
       }
     },
     "2026": {
-      "nacionais_variaveis": [
-        { "data": "2026-02-16", "descricao": "Carnaval" },
-        { "data": "2026-02-17", "descricao": "Carnaval" },
-        { "data": "2026-04-03", "descricao": "Sexta-Feira da Paixão" },
-        { "data": "2026-06-04", "descricao": "Corpus Christi" }
-      ],
       "por_tribunal": {
         "STJ": [
           { "data": "2026-04-01", "descricao": "Semana Santa (Segunda)", "tipo": "feriado" },
@@ -156,12 +144,6 @@
       }
     },
     "2027": {
-      "nacionais_variaveis": [
-        { "data": "2027-02-15", "descricao": "Carnaval" },
-        { "data": "2027-02-16", "descricao": "Carnaval" },
-        { "data": "2027-03-26", "descricao": "Sexta-Feira da Paixão" },
-        { "data": "2027-05-27", "descricao": "Corpus Christi" }
-      ],
       "por_tribunal": {
         "STJ": [],
         "STF": [],

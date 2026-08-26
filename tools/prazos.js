@@ -101,6 +101,8 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
 .pz-btn-copy { margin-top:10px; background:var(--azul-700); color:#fff; border:none; border-radius:6px; padding:9px 18px; font-size:.8rem; font-family:inherit; cursor:pointer; transition:background .15s; }
 .pz-btn-copy:hover { background:var(--azul-900); }
 .pz-btn-copy.pz-copied { background:#2e7d32; }
+.pz-note { font-size:.72rem; color:var(--txt-3); padding:12px 16px; border-left:3px solid var(--borda); background:var(--fundo); border-radius:0 6px 6px 0; line-height:1.7; margin:16px 0 0; }
+.pz-note strong { color:var(--txt-2); }
 `,
 
   html: `
@@ -234,6 +236,14 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
       <div class="pz-temp-out" id="pz-temp-out"></div>
       <button type="button" class="pz-btn-copy" id="pz-temp-copy">Copiar texto</button>
     </div>
+
+    <p class="pz-note">
+      <strong>Notas:</strong> pontos facultativos são tratados como dias não úteis, junto com feriados e recesso
+      (mesmo critério conservador usado na prática forense). Carnaval, Sexta-Feira da Paixão e Corpus Christi são
+      calculados automaticamente a partir da Páscoa, para qualquer ano. Feriados e recessos específicos de cada
+      tribunal dependem de cadastro manual — quando ausentes para o período calculado, um aviso aparece no card de
+      Resultado. Este simulador não substitui análise jurídica profissional.
+    </p>
   </div>
 </div>
 `,
@@ -288,6 +298,37 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
     const diaSem   = d => DIAS_PT[d.getDay()];
     const isWknd   = d => d.getDay()===0 || d.getDay()===6;
 
+    // Algoritmo de Meeus/Butcher — Páscoa (calendário gregoriano), válido
+    // para qualquer ano. Evita depender de uma lista de datas mantida à mão
+    // ano a ano só para Carnaval, Sexta-Feira da Paixão e Corpus Christi.
+    function pascoa(ano) {
+      const a = ano % 19;
+      const b = Math.floor(ano / 100);
+      const c = ano % 100;
+      const d = Math.floor(b / 4);
+      const e = b % 4;
+      const f = Math.floor((b + 8) / 25);
+      const g = Math.floor((b - f + 1) / 3);
+      const h = (19 * a + b - d - g + 15) % 30;
+      const i = Math.floor(c / 4);
+      const k = c % 4;
+      const l = (32 + 2 * e + 2 * i - h - k) % 7;
+      const m = Math.floor((a + 11 * h + 22 * l) / 451);
+      const mes = Math.floor((h + l - 7 * m + 114) / 31);
+      const dia = ((h + l - 7 * m + 114) % 31) + 1;
+      return new Date(ano, mes - 1, dia);
+    }
+
+    function feriadosMoveisNacionais(ano) {
+      const p = pascoa(ano);
+      return [
+        { data: isoStr(addDays(p, -48)), descricao: 'Carnaval' },
+        { data: isoStr(addDays(p, -47)), descricao: 'Carnaval' },
+        { data: isoStr(addDays(p, -2)),  descricao: 'Sexta-Feira da Paixão' },
+        { data: isoStr(addDays(p, 60)),  descricao: 'Corpus Christi' },
+      ];
+    }
+
     function isRecesso(date, tribunal) {
       if (!tribunal) return false;
       const md = (date.getMonth()+1)*100 + date.getDate();
@@ -305,15 +346,22 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
       if (!calData) return null;
       const fixo = calData.feriados.fixos.find(f => f.data === mmdd(date));
       if (fixo) return { tipo:'nacional', desc:fixo.descricao };
+
+      const iso = isoStr(date);
       const yrData = calData.feriados[String(date.getFullYear())];
-      if (yrData) {
-        const iso = isoStr(date);
-        const varFer = yrData.nacionais_variaveis.find(f => f.data === iso);
-        if (varFer) return { tipo:'nacional', desc:varFer.descricao };
-        if (tribunalId && yrData.por_tribunal[tribunalId]) {
-          const tf = yrData.por_tribunal[tribunalId].find(f => f.data === iso);
-          if (tf) return { tipo:'tribunal', desc:tf.descricao };
-        }
+
+      // O JSON, quando tem `nacionais_variaveis` preenchido para o ano, vence
+      // (permite corrigir/complementar); senão, calcula pela Páscoa — cobre
+      // qualquer ano, inclusive os que nunca foram cadastrados manualmente.
+      const variaveis = (yrData && yrData.nacionais_variaveis && yrData.nacionais_variaveis.length)
+        ? yrData.nacionais_variaveis
+        : feriadosMoveisNacionais(date.getFullYear());
+      const varFer = variaveis.find(f => f.data === iso);
+      if (varFer) return { tipo:'nacional', desc:varFer.descricao };
+
+      if (tribunalId && yrData && yrData.por_tribunal && yrData.por_tribunal[tribunalId]) {
+        const tf = yrData.por_tribunal[tribunalId].find(f => f.data === iso);
+        if (tf) return { tipo:'tribunal', desc:tf.descricao };
       }
       return null;
     }
@@ -325,25 +373,25 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
       return true;
     }
 
-    // Verifica se calData tem cobertura de feriados para os anos do período
-    // calculado. Sem isso, um ano ausente faz o cálculo ignorar feriados em
-    // silêncio (termo final antecipado) — melhor avisar do que calcular errado
-    // com a mesma aparência de um resultado confiável.
+    // Verifica se calData tem cobertura de feriados de TRIBUNAL para os anos
+    // do período calculado. Os feriados nacionais (fixos e móveis) sempre
+    // têm cobertura — os fixos são uma lista sem ano, os móveis são
+    // calculados pela Páscoa. Só o recesso/feriado específico de cada
+    // tribunal depende de cadastro manual no calendario.json; sem isso o
+    // cálculo ignora esses dias em silêncio (termo final antecipado) —
+    // melhor avisar do que calcular errado com a mesma aparência de um
+    // resultado confiável.
     function verificarCobertura(t0, t1, tribunalId) {
       const problemas = [];
       const tribunalReal = (tribunalId && tribunalId !== '_uteis' && tribunalId !== '_corridos') ? tribunalId : null;
+      if (!tribunalReal) return problemas;
+
       const anoIni = t0.getFullYear(), anoFim = t1.getFullYear();
       for (let ano = anoIni; ano <= anoFim; ano++) {
         const yrData = calData.feriados[String(ano)];
-        if (!yrData) {
-          problemas.push(`Sem dados de feriados nacionais variáveis (Carnaval, Páscoa, Corpus Christi) para ${ano}.`);
-          continue;
-        }
-        if (tribunalReal) {
-          const lista = yrData.por_tribunal ? yrData.por_tribunal[tribunalReal] : null;
-          if (!lista || lista.length === 0) {
-            problemas.push(`Sem feriados do ${tribunalReal} cadastrados para ${ano}.`);
-          }
+        const lista = yrData && yrData.por_tribunal ? yrData.por_tribunal[tribunalReal] : null;
+        if (!lista || lista.length === 0) {
+          problemas.push(`Sem feriados do ${tribunalReal} cadastrados para ${ano}.`);
         }
       }
       return problemas;
