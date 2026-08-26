@@ -104,6 +104,13 @@ O `TOKEN` evita acesso acidental à planilha, mas **não é autenticação real*
 
 ---
 
+## Limitações conhecidas
+
+- **Sem controle de concorrência entre abas/dispositivos.** Cada alteração grava a lista de tarefas inteira; se duas abas estiverem abertas ao mesmo tempo, a última a salvar sobrescreve a outra por completo ("last write wins"). Evite manter o dashboard aberto em mais de um lugar simultaneamente enquanto edita tarefas.
+- **Cache local é só de emergência.** Se a sincronização falhar ao carregar, o app exibe a última lista salva com sucesso no navegador (via `localStorage`), em modo somente leitura — nenhuma alteração feita nesse estado é persistida até a sincronização voltar.
+
+---
+
 ## Estrutura do projeto
 
 ```

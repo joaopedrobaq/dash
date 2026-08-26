@@ -360,6 +360,45 @@ tr.editing .edit-input {
 
 form.form-desabilitado { opacity: .5; pointer-events: none; }
 
+.col-actions button:disabled { opacity: .3; cursor: default; }
+
+/* ── Toast de "desfazer exclusão" ── */
+.todo-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2c3e50;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+  z-index: 500;
+  max-width: 90vw;
+}
+
+.todo-toast button {
+  background: #fff;
+  color: #2c3e50;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.todo-toast button:hover { background: #dce3ea; }
+
+@media (max-width: 768px) {
+  .todo-toast { bottom: 76px; }
+}
+
 /* ── Prioridade — cores de linha ── */
 tr.row-alta  { background-color: #fff0f0; }
 tr.row-media { background-color: #fffbe6; }
