@@ -8,6 +8,8 @@ window._tools['prazos'] = {
 .pz-tool { font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif; padding:20px 20px 32px; background:var(--superficie); }
 .pz-card { background:var(--fundo); border-radius:12px; padding:24px; margin-bottom:16px; }
 .pz-result-card { background:var(--fundo); border:2px solid var(--azul-700); border-radius:12px; padding:24px; margin-bottom:16px; }
+.pz-sticky-resumo { position:sticky; top:0; z-index:10; margin:-20px -20px 16px; padding:12px 20px; background:var(--azul-700); color:#fff; font-size:.85rem; font-weight:600; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.pz-sticky-resumo .pz-sticky-aviso { font-weight:700; color:#ffd54f; }
 .pz-card-title { font-size:.7rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--azul-700); border-bottom:2px solid var(--borda-clara); padding-bottom:10px; margin-bottom:18px; }
 .pz-field { margin-bottom:18px; }
 .pz-field:last-child { margin-bottom:0; }
@@ -68,7 +70,17 @@ select.pz-select:focus { border-color:var(--azul-700); }
 .pz-d-inicio { background:#1976d2; color:#fff; font-weight:700; border-radius:50%; }
 .pz-d-fim { background:#0d47a1; color:#fff; font-weight:700; border-radius:50%; }
 .pz-cal-day[data-tip] { cursor:help; }
-.pz-cal-day[data-tip]:hover::after { content:attr(data-tip); position:absolute; bottom:calc(100% + 5px); left:50%; transform:translateX(-50%); background:rgba(30,30,30,.92); color:#fff; font-size:.65rem; font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif; padding:4px 8px; border-radius:4px; white-space:normal; max-width:180px; text-align:center; line-height:1.4; z-index:200; pointer-events:none; }
+.pz-cal-day[data-tip]:hover::after,
+.pz-cal-day[data-tip]:focus-visible::after,
+.pz-cal-day[data-tip].pz-tip-ativo::after { content:attr(data-tip); position:absolute; bottom:calc(100% + 5px); left:50%; transform:translateX(-50%); background:rgba(30,30,30,.92); color:#fff; font-size:.65rem; font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif; padding:4px 8px; border-radius:4px; white-space:normal; max-width:180px; text-align:center; line-height:1.4; z-index:200; pointer-events:none; }
+
+.pz-lista-naoUteis { margin-top:12px; }
+.pz-lista-naoUteis .pz-lista-titulo { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--txt-3); margin-bottom:6px; }
+.pz-lista-naoUteis ul { margin:0; padding-left:18px; font-size:.78rem; color:var(--txt); line-height:1.8; }
+
+@media (max-width:768px) {
+  .pz-cal-day { min-height:32px; }
+}
 .pz-legenda { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; padding-top:12px; border-top:1px solid var(--borda-clara); }
 .pz-leg-item { display:flex; align-items:center; gap:5px; font-size:.68rem; color:var(--txt-2); }
 .pz-leg-swatch { width:13px; height:13px; border-radius:3px; flex-shrink:0; }
@@ -94,6 +106,7 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
   html: `
 <div class="pz-tool">
   <div id="pz-loading" class="pz-loading">Carregando calendário…</div>
+  <div id="pz-sticky-resumo" class="pz-sticky-resumo" style="display:none"></div>
   <div id="pz-main" style="display:none">
 
     <div class="pz-card">
@@ -152,6 +165,7 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
         <div class="pz-card-title">Calendário</div>
         <div id="pz-calendario"></div>
         <div class="pz-legenda" id="pz-legenda"></div>
+        <div id="pz-lista-naoUteis" class="pz-lista-naoUteis"></div>
       </div>
     </div>
 
@@ -445,6 +459,15 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
         `<dt>Termo final</dt><dd>${fmtDate(termoFinal)} (${diaSem(termoFinal)})</dd>`;
       $('pz-resumo').innerHTML = resumoHtml;
 
+      // Barra fixa no topo do painel — o card de Resultado completo fica
+      // abaixo dos Parâmetros e pode sair da tela; isto mantém a resposta
+      // visível o tempo todo, sem precisar rolar.
+      const sticky = $('pz-sticky-resumo');
+      sticky.innerHTML =
+        `Termo final: <strong>${fmtDate(termoFinal)}</strong> (${diaSem(termoFinal)})` +
+        (problemasCobertura && problemasCobertura.length ? ' <span class="pz-sticky-aviso">⚠ confira manualmente</span>' : '');
+      sticky.style.display = '';
+
       $('pz-note-prorr').innerHTML  = '';
       $('pz-note-aviso').innerHTML  = '';
       if (prorrogadoDe) {
@@ -492,6 +515,11 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
       const endMo  = new Date(t1.getFullYear(), t1.getMonth(), 1);
       let rendered = 0;
 
+      // Feriados/recesso dentro do período — vira lista de texto abaixo do
+      // calendário (o tooltip por :hover não existe no toque nem no teclado).
+      const CLASSES_NAO_UTIL = ['pz-d-recesso', 'pz-d-fer-nac', 'pz-d-fer-trib'];
+      const naoUteis = [];
+
       while (cursor <= endMo && rendered++ < 24) {
         const yr = cursor.getFullYear(), mo = cursor.getMonth();
         const wrap = document.createElement('div');
@@ -527,7 +555,14 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
           const cell = document.createElement('div');
           cell.className = 'pz-cal-day ' + info.cls;
           cell.textContent = d;
-          if (info.tip) cell.setAttribute('data-tip', info.tip);
+          if (info.tip) {
+            cell.setAttribute('data-tip', info.tip);
+            cell.tabIndex = 0;
+            // Toque no mobile: não existe :hover, então o clique alterna o
+            // tooltip (o :focus-visible já cobre navegação por teclado).
+            cell.addEventListener('click', () => cell.classList.toggle('pz-tip-ativo'));
+          }
+          if (CLASSES_NAO_UTIL.includes(info.cls)) naoUteis.push({ date, tip: info.tip });
           grid.appendChild(cell);
         }
 
@@ -537,6 +572,16 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
       }
 
       renderLegenda(t0, t1, tribunal, modalidade, dateDispon, datePub);
+      renderListaNaoUteis(naoUteis);
+    }
+
+    function renderListaNaoUteis(naoUteis) {
+      const el = $('pz-lista-naoUteis');
+      if (naoUteis.length === 0) { el.innerHTML = ''; return; }
+      naoUteis.sort((a, b) => a.date - b.date);
+      el.innerHTML =
+        '<div class="pz-lista-titulo">Feriados e recessos no período</div>' +
+        '<ul>' + naoUteis.map(n => `<li>${fmtDate(n.date)} (${diaSem(n.date)}) — ${n.tip}</li>`).join('') + '</ul>';
     }
 
     function renderLegenda(t0, t1, tribunal, modalidade, dateDispon, datePub) {
@@ -723,6 +768,7 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
     function mostrarVazio(vazio = true) {
       $('pz-result-area').style.display = vazio ? 'none' : '';
       $('pz-empty').style.display       = vazio ? ''     : 'none';
+      if (vazio) $('pz-sticky-resumo').style.display = 'none';
     }
 
     function syncRadioStyles() {

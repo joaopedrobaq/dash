@@ -69,7 +69,9 @@ function abrirFerramenta(toolId) {
       document.head.appendChild(style);
     }
 
-    document.getElementById("tool-content").innerHTML = tool.html || "";
+    const conteudo = document.getElementById("tool-content");
+    conteudo.innerHTML = tool.html || "";
+    conteudo.scrollTop = 0;
     document.getElementById("tool-title").textContent = tool.name || "";
     toolAtual = toolId;
     if (tool.init) tool.init();
