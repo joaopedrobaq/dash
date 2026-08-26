@@ -1,4 +1,4 @@
-{
+window._calendarioDados = {
   "tribunais": [
     {
       "id": "STJ",
@@ -154,4 +154,4 @@
       }
     }
   }
-}
+};

@@ -58,8 +58,8 @@ Instale a extensão [Live Server](https://marketplace.visualstudio.com/items?ite
 
 ---
 
-> **Por que não abrir o `index.html` diretamente (`file://`)?**
-> O fetch para o Google Apps Script e para `tools/calendario.json` falha por restrição de CORS em `file://`. Use sempre um servidor local.
+> **Abrir o `index.html` diretamente (`file://`) funciona?**
+> As ferramentas (Contador de Prazos, Honorários, QR Code, Inscrição Imobiliária) funcionam normalmente, mesmo sem servidor. Só a sincronização de tarefas com o Google Apps Script não funciona em `file://` (fetch para um domínio externo é bloqueado por CORS nesse contexto) — para isso é necessário um servidor local ou o deploy no GitHub Pages.
 
 ---
 
@@ -116,11 +116,13 @@ O `TOKEN` evita acesso acidental à planilha, mas **não é autenticação real*
 ```
 /
 ├── index.html              # Página única (SPA)
-├── app.js                  # Navegação e abertura de ferramentas
+├── app.js                  # Navegação (data-view + rotas por hash)
 ├── todo.js                 # Lógica de tarefas (CRUD, drag-and-drop, sync)
 ├── db.js                   # Comunicação com o Google Apps Script
 ├── emails.js               # Extrator de e-mails
-├── style.css               # Estilos (layout grid + mobile)
+├── utils.js                # copiarTexto() compartilhado
+├── sw.js                   # Service worker (cache-first do shell, offline)
+├── style.css               # Estilos (tokens de cor em :root, grid + mobile)
 ├── config.js               # Credenciais locais (não commitado)
 ├── config.example.js       # Template de configuração
 ├── manifest.json           # PWA manifest
@@ -129,7 +131,8 @@ O `TOKEN` evita acesso acidental à planilha, mas **não é autenticação real*
 │   ├── honorarios.js       # Calculadora de Honorários
 │   ├── qrcode.js           # Gerador de QR Code (lib embutida)
 │   ├── inscricao.js        # Calculadora de Dígito - IPTU SSA
-│   └── calendario.json     # Feriados e recesso do TJPB
+│   └── calendario.js       # Feriados por tribunal + recesso (script, não
+│                            # JSON — funciona também em file://)
 └── .github/workflows/
     └── deploy.yml          # CI/CD → GitHub Pages
 ```

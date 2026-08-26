@@ -22,8 +22,9 @@ tools/
   prazos.js          — calculadora de prazos processuais + calendário visual
   inscricao.js       — dígito verificador de inscrição imobiliária (IPTU SSA)
   qrcode.js          — gerador de QR Code (lib qrcode-generator embutida)
-  calendario.json    — feriados por tribunal + recesso (feriados móveis nacionais
-                        são calculados pela Páscoa em prazos.js, não ficam aqui)
+  calendario.js      — feriados por tribunal + recesso, via `window._calendarioDados`
+                        (script, não JSON — funciona em file://; feriados móveis
+                        nacionais são calculados pela Páscoa em prazos.js, não ficam aqui)
 manifest.json        — PWA manifest (icon-512.png incluído)
 ```
 
