@@ -98,7 +98,10 @@ window._tools['honorarios'] = {
   </div>
 
   <p class="h-note">
-    <strong>Notas:</strong> Cálculo progressivo — cada faixa incide apenas sobre o excedente.
+    <strong>Notas:</strong> O art. 85, §3º do CPC (faixas progressivas) só se aplica quando a
+    <strong>Fazenda Pública é parte vencida</strong> — em causas entre particulares vale o §2º
+    (percentual único de 10% a 20% sobre todo o valor).
+    Cálculo progressivo — cada faixa incide apenas sobre o excedente.
     Percentuais fixados pelo juiz conforme art. 85, §2º, I–IV.
     Valores do SM conforme decretos federais. Em 2023 consta o segundo reajuste (mai/2023, Lei 14.663/2023).
     Este simulador não substitui análise jurídica profissional.
@@ -150,8 +153,8 @@ window._tools['honorarios'] = {
     function getSM() { return parseFloat($('hon-sm-select').value); }
 
     function updateBadge() {
-      const idx  = $('hon-sm-select').selectedIndex;
-      const item = SM_HISTORICO[idx];
+      const opt  = $('hon-sm-select').selectedOptions[0];
+      const item = SM_HISTORICO.find(x => String(x.ano) === opt.dataset.ano);
       $('hon-sm-badge').textContent = `SM ${item.ano}: R$ ${fmtN(item.valor)}  ·  ${item.ref}`;
     }
 
@@ -160,6 +163,7 @@ window._tools['honorarios'] = {
       SM_HISTORICO.forEach(item => {
         const opt = document.createElement('option');
         opt.value = item.valor;
+        opt.dataset.ano = item.ano;
         opt.textContent = `${item.ano}  ·  R$ ${fmtN(item.valor)}  —  ${item.ref}`;
         sel.appendChild(opt);
       });
