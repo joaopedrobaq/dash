@@ -19,7 +19,7 @@ const ARQUIVOS = [
   "./tools/prazos.js",
   "./tools/inscricao.js",
   "./tools/qrcode.js",
-  "./tools/calendario.json",
+  "./tools/calendario.js",
   "./icon.svg",
   "./icon-192.png",
   "./icon-512.png",

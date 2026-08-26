@@ -38,9 +38,6 @@ select.pz-select:focus { border-color:var(--azul-700); }
 .pz-switch input:checked + .pz-switch-slider { background:var(--azul-700); }
 .pz-switch input:checked + .pz-switch-slider::before { transform:translateX(20px); }
 .pz-loading { padding:24px; text-align:center; color:#888; font-size:.85rem; line-height:1.7; }
-.pz-loading code { background:#eee; border-radius:3px; padding:1px 5px; font-size:.85em; }
-.pz-loading button { margin-top:10px; background:var(--azul-700); color:#fff; border:none; border-radius:6px; padding:8px 16px; font-size:.8rem; font-family:inherit; cursor:pointer; }
-.pz-loading button:hover { background:var(--azul-900); }
 .pz-hint { font-size:.78rem; color:var(--txt-3); padding:12px 16px; border-left:3px solid var(--borda); background:var(--fundo); border-radius:0 6px 6px 0; margin-bottom:16px; }
 .pz-resumo-grid { display:grid; grid-template-columns:auto 1fr; gap:6px 16px; font-size:.85rem; margin:0; }
 .pz-resumo-grid dt { color:var(--txt-3); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; display:flex; align-items:center; }
@@ -377,7 +374,7 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
     // do período calculado. Os feriados nacionais (fixos e móveis) sempre
     // têm cobertura — os fixos são uma lista sem ano, os móveis são
     // calculados pela Páscoa. Só o recesso/feriado específico de cada
-    // tribunal depende de cadastro manual no calendario.json; sem isso o
+    // tribunal depende de cadastro manual no calendario.js; sem isso o
     // cálculo ignora esses dias em silêncio (termo final antecipado) —
     // melhor avisar do que calcular errado com a mesma aparência de um
     // resultado confiável.
@@ -891,30 +888,17 @@ select.pz-select-sm { font-size:.8rem; padding:8px 28px 8px 9px; }
       calcular();
     }
 
-    // ── carga do JSON ────────────────────────────────────────────────────────
-    // Sem fallback embutido: um fallback duplicado dos dados do calendário.json
-    // divergiria dele com o tempo, e o cálculo mudaria de resultado conforme o
-    // fetch funcionasse ou não, sem o usuário saber qual fonte foi usada.
-    function carregarCalendario() {
-      // Reutiliza entre aberturas da ferramenta na mesma sessão — evita
-      // refazer o fetch toda vez que o usuário clica em "Contador de Prazos".
-      if (window._calCache) { setup(window._calCache); return; }
-
-      $('pz-loading').innerHTML = 'Carregando calendário…';
-      $('pz-loading').style.display = '';
-      $('pz-main').style.display = 'none';
-      fetch('./tools/calendario.json')
-        .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-        .then(dados => { window._calCache = dados; setup(dados); })
-        .catch(() => {
-          $('pz-loading').innerHTML =
-            'Não foi possível carregar o calendário de feriados.<br>' +
-            'Abra esta ferramenta pelo servidor local (ex.: <code>python -m http.server</code>), não por <code>file://</code>.' +
-            '<br><button type="button" id="pz-retry">Tentar novamente</button>';
-          const retry = document.getElementById('pz-retry');
-          if (retry) retry.addEventListener('click', carregarCalendario);
-        });
+    // ── carga do calendário ──────────────────────────────────────────────────
+    // tools/calendario.js define window._calendarioDados via <script src>
+    // (carregado antes deste arquivo pelo index.html) em vez de fetch — um
+    // fetch de arquivo local é bloqueado por CORS em file://, então a
+    // ferramenta não funcionava fora de um servidor. <script> não tem essa
+    // restrição, então isto funciona tanto em file:// quanto num servidor.
+    if (window._calendarioDados) {
+      setup(window._calendarioDados);
+    } else {
+      $('pz-loading').innerHTML =
+        'Não foi possível carregar os dados do calendário — tools/calendario.js não foi encontrado ou não foi incluído no index.html.';
     }
-    carregarCalendario();
   }
 };
