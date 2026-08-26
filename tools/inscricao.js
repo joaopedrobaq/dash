@@ -84,14 +84,21 @@ window._tools['inscricao'] = {
 
     box.addEventListener('click', () => {
       if (!_ultima) return;
-      navigator.clipboard.writeText(_ultima).then(() => {
-        const prev = box.textContent;
+      const prev = box.textContent;
+      copiarTexto(_ultima).then(() => {
         box.className = 'ins-result ins-copiado';
         box.textContent = 'Copiado!';
         setTimeout(() => {
           box.className = 'ins-result';
           box.textContent = prev;
         }, 600);
+      }).catch(() => {
+        box.className = 'ins-result ins-erro';
+        box.textContent = 'Não foi possível copiar — selecione manualmente.';
+        setTimeout(() => {
+          box.className = 'ins-result';
+          box.textContent = prev;
+        }, 2000);
       });
     });
 
